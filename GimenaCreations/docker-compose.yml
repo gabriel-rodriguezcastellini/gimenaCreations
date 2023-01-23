@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  gimenacreations:
+    image: ${DOCKER_REGISTRY-}gimenacreations
+    build:
+      context: .
+      dockerfile: GimenaCreations\Dockerfile
+    depends_on:
+        - sqldata
+  sqldata:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+  #basketdata:
+  #  image: redis
+  #  expose:
+  #    - "6379"
+  #basket-api:
+  #  environment:
+  #    - ConnectionString=basketdata
+  #    - EventBusConnection=rabbitmq
