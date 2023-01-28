@@ -6,75 +6,42 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<!--Grid row-->
+<div class="row">
+    <!--Grid column-->
+    <div class="col-md-6 mb-4">
+        <img src="~/@Model.CatalogItem.PictureFileName" class="img-fluid" alt="" />
+    </div>
+    <!--Grid column-->
+    <!--Grid column-->
+    <div class="col-md-6 mb-4">
+        <!--Content-->
+        <div class="p-4">
+            <div class="mb-3">
+                <a href="">
+                    <span class="badge bg-dark me-1">@Model.CatalogItem.CatalogType.Type</span>
+                </a>
+            </div>
 
-<div>
-    <h4>CatalogItem</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.PictureFileName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.PictureFileName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.CatalogType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.CatalogType.Type)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.CatalogBrand)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.CatalogBrand.Brand)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.AvailableStock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.AvailableStock)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.RestockThreshold)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.RestockThreshold)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.MaxStockThreshold)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.MaxStockThreshold)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CatalogItem.OnReorder)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CatalogItem.OnReorder)
-        </dd>
-    </dl>
+            <p class="lead">
+                <span>$@Model.CatalogItem.Price</span>
+            </p>
+
+            <p style="font-size: 20px;">Description</p>
+
+            <p>@Model.CatalogItem.Description</p>
+
+            <form class="d-flex justify-content-left" asp-page="/Cart/Index" method="post">
+                <button class="btn btn-primary ms-1" type="submit">
+                    Add to cart
+                    <i class="fas fa-shopping-cart ms-1"></i>
+                </button>
+                <input type="hidden" asp-for="@Model.CatalogItem.Id" name="catalogItemId" />
+                <input type="hidden" value="/CatalogItems/Details" name="returnUrl" />
+            </form>
+        </div>
+        <!--Content-->
+    </div>
+    <!--Grid column-->
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.CatalogItem?.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+<!--Grid row-->

@@ -1,6 +1,8 @@
 using GimenaCreations.Data;
+using GimenaCreations.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +52,11 @@ services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 });
-
+//Configure other services up here
+var multiplexer = ConnectionMultiplexer.Connect("localhost");
+services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+services.AddTransient<ICartService, CartService>();
+services.AddTransient<ICatalogService, CatalogService>();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

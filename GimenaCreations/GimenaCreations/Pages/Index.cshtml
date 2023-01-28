@@ -76,6 +76,14 @@
                             <p>@item.CatalogType.Type</p>
                         </a>
                         <h6 class="mb-3 price">$@item.Price</h6>
+                        <form method="post" asp-page="/Cart/Index">
+                            <button type="submit" class="btn btn-primary" @(User.Identity?.IsAuthenticated == true ? null : "disabled")>ADD TO CART</button>
+                            <input type="hidden" asp-for="@item.Id" name="catalogItemId" />
+                            <input type="hidden" asp-for="@Model.CurrentFilter" name="currentFilter" />
+                            <input type="hidden" asp-for="@Model.CatalogTypeId" name="catalogTypeId" />
+                            <input type="hidden" asp-for="@Model.CatalogItem.PageIndex" name="pageIndex" />
+                            <input type="hidden" value="/Index" name="returnUrl" />
+                        </form>
                     </div>
                 </div>
             </div>
