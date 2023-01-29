@@ -57,7 +57,7 @@ namespace GimenaCreations.Pages.Cart
                 return RedirectToPage("/Order/Create");
             }
 
-            return Page();
+            return RedirectToPage("/Cart/Index");
         }
     }
 }

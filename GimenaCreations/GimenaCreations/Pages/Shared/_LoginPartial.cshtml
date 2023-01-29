@@ -5,7 +5,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <a class="btn btn-link" data-mdb-ripple-color="dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    @await Component.InvokeAsync("Cart")
+    @await Component.InvokeAsync(typeof(GimenaCreations.ViewComponents.Cart))
     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
         <button type="submit" class="btn btn-link" data-mdb-ripple-color="dark">Logout</button>
     </form>
