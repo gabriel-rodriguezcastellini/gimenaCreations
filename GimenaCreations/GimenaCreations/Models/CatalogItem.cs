@@ -16,6 +16,6 @@
         public int RestockThreshold { get; set; }
         public int MaxStockThreshold { get; set; }
         public bool OnReorder { get; set; }
-        public ICollection<Order> Orders { get; set; } = null!;
+        public ICollection<OrderItem> Items { get; set; } = null!;
     }
 }

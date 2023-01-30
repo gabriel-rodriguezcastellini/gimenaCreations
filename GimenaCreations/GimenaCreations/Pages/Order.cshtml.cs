@@ -11,12 +11,14 @@ namespace GimenaCreations.Pages;
 public class OrderModel : PageModel
 {
     private readonly ICartService _cartService;
+    private readonly IOrderService _orderService;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public OrderModel(ICartService cartService, UserManager<ApplicationUser> userManager)
+    public OrderModel(ICartService cartService, UserManager<ApplicationUser> userManager, IOrderService orderService)
     {
         _cartService = cartService;
         _userManager = userManager;
+        _orderService = orderService;
     }
 
     [BindProperty]
@@ -39,8 +41,10 @@ public class OrderModel : PageModel
         };
     }
 
-    public async Task OnPostAsync()
+    public async Task<IActionResult> OnPostAsync()
     {
-
+        var order = await _cartService.CheckoutAsync(Checkout, _userManager.GetUserId(HttpContext.User));
+        await _orderService.CreateOrderAsync(order);
+        return RedirectToPage("OrderSubmitted");
     }
 }

@@ -121,7 +121,7 @@
                                     <input asp-for="Checkout.PaymentMethod" type="radio" value="@item" class="form-check-input" />
                                 }
                                 <label class="form-check-label" for="@item">
-                                    @Html.Raw(((PaymentMethod)item).GetType().GetMember(item.ToString()!).First().GetCustomAttribute<DisplayAttribute>()!.Name)
+                                    @(((PaymentMethod)item).GetDisplayName())
                                 </label>
                             </div>
                             index++;

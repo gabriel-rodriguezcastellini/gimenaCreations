@@ -42,9 +42,39 @@ public class CartService : ICartService
         await UpdateBasketAsync(basket);
     }
 
-    public Task CheckoutAsync(CustomerBasket basket)
+    public async Task<Models.Order> CheckoutAsync(BasketCheckout checkout, string userId)
     {
-        throw new NotImplementedException();
+        var order = new Models.Order
+        {
+            Address = new()
+            {
+                City = checkout.City,
+                Country = checkout.Country,
+                State = checkout.State,
+                Street = checkout.Street,
+                ZipCode = checkout.ZipCode
+            },
+            Items = (await GetBasketAsync(userId)).Items.Select(i => new OrderItem
+            {
+                CatalogItemId = i.ProductId,
+                PictureUrl = i.PictureUrl,
+                ProductName = i.ProductName,
+                UnitPrice = i.UnitPrice,
+                Units = i.Quantity
+            }).ToList(),
+            Date = DateTime.UtcNow,
+            PaymentMethod = (PaymentMethod)checkout.PaymentMethod!,
+            ApplicationUserId = userId,
+            Status = OrderStatus.Submited
+        };
+
+        await DeleteBasketAsync(userId);
+        return order;
+    }
+
+    public async Task DeleteBasketAsync(string id)
+    {
+        await _redis.GetDatabase().KeyDeleteAsync(id);
     }
 
     public async Task DeleteItemAsync(string basketId, int productId)

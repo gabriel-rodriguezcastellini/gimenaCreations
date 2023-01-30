@@ -58,6 +58,7 @@ var multiplexer = ConnectionMultiplexer.Connect("localhost");
 services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 services.AddTransient<ICartService, CartService>();
 services.AddTransient<ICatalogService, CatalogService>();
+services.AddTransient<IOrderService, OrderService>();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

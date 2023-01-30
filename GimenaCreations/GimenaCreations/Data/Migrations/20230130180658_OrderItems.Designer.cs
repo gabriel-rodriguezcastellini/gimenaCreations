@@ -4,6 +4,7 @@ using GimenaCreations.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GimenaCreations.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230130180658_OrderItems")]
+    partial class OrderItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,7 +237,7 @@ namespace GimenaCreations.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "orderitemseq");
 
-                    b.Property<int>("CatalogItemId")
+                    b.Property<int?>("CatalogItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderId")
@@ -504,19 +506,15 @@ namespace GimenaCreations.Data.Migrations
 
             modelBuilder.Entity("GimenaCreations.Models.OrderItem", b =>
                 {
-                    b.HasOne("GimenaCreations.Models.CatalogItem", "CatalogItem")
+                    b.HasOne("GimenaCreations.Models.CatalogItem", null)
                         .WithMany("Items")
-                        .HasForeignKey("CatalogItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CatalogItemId");
 
                     b.HasOne("GimenaCreations.Models.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CatalogItem");
 
                     b.Navigation("Order");
                 });
