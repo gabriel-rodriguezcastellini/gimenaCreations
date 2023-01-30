@@ -29,19 +29,19 @@
 
                 <!-- Link -->
                 <li class="nav-item acitve">
-                    <a class="nav-link text-white" asp-page="./Index" asp-route-catalogTypeId="@null" asp-route-searchString="@Model.CurrentFilter">All</a>
+                    <a class="nav-link text-white" asp-page="Index" asp-route-catalogTypeId="@null" asp-route-searchString="@Model.CurrentFilter">All</a>
                 </li>
 
                 @foreach (var item in Model.CatalogType)
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-page="./Index" asp-route-catalogTypeId="@item.Id" asp-route-searchString="@Model.CurrentFilter">@item.Type</a>
+                        <a class="nav-link text-white" asp-page="Index" asp-route-catalogTypeId="@item.Id" asp-route-searchString="@Model.CurrentFilter">@item.Type</a>
                     </li>
                 }
             </ul>
 
             <!-- Search -->
-            <form class="w-auto py-1" style="max-width: 12rem" asp-page="./Index" method="get">
+            <form class="w-auto py-1" style="max-width: 12rem" asp-page="Index" method="get">
                 <input type="search" name="searchString" value="@Model.CurrentFilter" class="form-control rounded-0" placeholder="Search" aria-label="Search">
                 <input type="submit" value="Search" class="btn btn-primary" />
             </form>
@@ -62,27 +62,27 @@
                      data-mdb-ripple-color="light">
                         <img src="@item.PictureFileName"
                          class="w-100" />
-                        <a asp-page="/CatalogItems/Details" asp-route-id="@item.Id">
+                        <a asp-page="CatalogItems" asp-route-id="@item.Id">
                             <div class="hover-overlay">
                                 <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                             </div>
                         </a>
                     </div>
                     <div class="card-body">
-                        <a asp-page="/CatalogItems/Details" asp-route-id="@item.Id" class="text-reset">
+                        <a asp-page="CatalogItems" asp-route-id="@item.Id" class="text-reset">
                             <h5 class="card-title mb-2">@item.Name</h5>
                         </a>
-                        <a asp-page="/CatalogItems/Details" asp-route-id="@item.Id" class="text-reset ">
+                        <a asp-page="CatalogItems" asp-route-id="@item.Id" class="text-reset ">
                             <p>@item.CatalogType.Type</p>
                         </a>
                         <h6 class="mb-3 price">$@item.Price</h6>
-                        <form method="post" asp-page="/Cart/Index">
+                        <form method="post" asp-page="Cart">
                             <button type="submit" class="btn btn-primary" @(User.Identity?.IsAuthenticated == true ? null : "disabled")>ADD TO CART</button>
                             <input type="hidden" asp-for="@item.Id" name="catalogItemId" />
                             <input type="hidden" asp-for="@Model.CurrentFilter" name="currentFilter" />
                             <input type="hidden" asp-for="@Model.CatalogTypeId" name="catalogTypeId" />
                             <input type="hidden" asp-for="@Model.CatalogItem.PageIndex" name="pageIndex" />
-                            <input type="hidden" value="/Index" name="returnUrl" />
+                            <input type="hidden" value="Index" name="returnUrl" />
                         </form>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
 <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
     <ul class="pagination">
         <li class="page-item @prevDisabled">
-            <a class="page-link @prevDisabled" aria-label="Previous" asp-page="./Index" asp-route-pageIndex="@(Model.CatalogItem.PageIndex - 1)"
+            <a class="page-link @prevDisabled" aria-label="Previous" asp-page="Index" asp-route-pageIndex="@(Model.CatalogItem.PageIndex - 1)"
                asp-route-currentFilter="@Model.CurrentFilter">
                 <span aria-hidden="true">&laquo;</span>
             </a>
@@ -109,13 +109,13 @@
         {
             var active = i == Model.CatalogItem.PageIndex ? "active" : "";
             <li class="page-item @active">
-                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-currentFilter="@Model.CurrentFilter">
+                <a class="page-link" asp-page="Index" asp-route-pageIndex="@i" asp-route-currentFilter="@Model.CurrentFilter">
                     @i
                 </a>
             </li>
         }
         <li class="page-item">
-            <a class="page-link @nextDisabled" aria-label="Next" asp-page="./Index" asp-route-pageIndex="@(Model.CatalogItem.PageIndex + 1)" asp-route-currentFilter="@Model.CurrentFilter">
+            <a class="page-link @nextDisabled" aria-label="Next" asp-page="Index" asp-route-pageIndex="@(Model.CatalogItem.PageIndex + 1)" asp-route-currentFilter="@Model.CurrentFilter">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

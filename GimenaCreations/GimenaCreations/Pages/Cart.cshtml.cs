@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace GimenaCreations.Pages.Cart
+namespace GimenaCreations.Pages
 {
     [Authorize]
-    public class IndexModel : PageModel
+    public class CartModel : PageModel
     {
         private readonly ICartService _cartService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IndexModel(ICartService cartService, UserManager<IdentityUser> userManager)
+        public CartModel(ICartService cartService, UserManager<ApplicationUser> userManager)
         {
             _cartService = cartService;
             _userManager = userManager;
@@ -27,7 +27,7 @@ namespace GimenaCreations.Pages.Cart
 
             if (CustomerBasket == null || !CustomerBasket.Items.Any())
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("Index");
             }
 
             return Page();
@@ -37,7 +37,7 @@ namespace GimenaCreations.Pages.Cart
         {
             await _cartService.AddItemToBasketAsync(_userManager.GetUserId(HttpContext.User), catalogItemId);
 
-            return returnUrl == "/CatalogItems/Details"
+            return returnUrl == "CatalogItems"
                 ? RedirectToPage(returnUrl, new { id = catalogItemId })
                 : (IActionResult)RedirectToPage(returnUrl, new { currentFilter, catalogTypeId, pageIndex });
         }
@@ -45,7 +45,7 @@ namespace GimenaCreations.Pages.Cart
         public async Task<IActionResult> OnPostDeleteItemAsync(int productId)
         {
             await _cartService.DeleteItemAsync(_userManager.GetUserId(HttpContext.User), productId);
-            return RedirectToPage("/Cart/Index");
+            return RedirectToPage("Cart");
         }
 
         public async Task<IActionResult> OnPostUpdateAsync(Dictionary<string, int> quantities, string action)
@@ -54,10 +54,10 @@ namespace GimenaCreations.Pages.Cart
 
             if (action == "CHECKOUT")
             {
-                return RedirectToPage("/Order/Create");
+                return RedirectToPage("Order");
             }
 
-            return RedirectToPage("/Cart/Index");
+            return RedirectToPage("Cart");
         }
     }
 }

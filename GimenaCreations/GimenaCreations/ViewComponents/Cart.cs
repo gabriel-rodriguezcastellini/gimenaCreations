@@ -1,4 +1,5 @@
-﻿using GimenaCreations.Services;
+﻿using GimenaCreations.Models;
+using GimenaCreations.Services;
 using GimenaCreations.ViewModels.CartViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,10 @@ namespace GimenaCreations.ViewComponents;
 
 public class Cart : ViewComponent
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly ICartService _cartService;
 
-    public Cart(UserManager<IdentityUser> userManager, ICartService cartService)
+    public Cart(UserManager<ApplicationUser> userManager, ICartService cartService)
     {
         _userManager = userManager;
         _cartService = cartService;

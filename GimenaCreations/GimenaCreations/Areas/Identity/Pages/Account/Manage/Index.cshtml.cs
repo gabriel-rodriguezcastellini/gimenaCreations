@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
+using GimenaCreations.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,12 +12,12 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,6 +49,27 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
+            [Required, Display(Name = "First name")]
+            public string FirstName { get; set; } = null!;
+
+            [Required, Display(Name = "Last name")]
+            public string LastName { get; set; } = null!;
+
+            [Required]
+            public string Street { get; set; } = null!;
+
+            [Required]
+            public string City { get; set; } = null!;
+
+            [Required]
+            public string State { get; set; } = null!;
+
+            [Required]
+            public string Country { get; set; } = null!;
+
+            [Required, Display(Name = "Zip code")]
+            public string ZipCode { get; set; } = null!;
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -57,7 +79,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -66,7 +88,14 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Street = user.Address.Street,
+                City = user.Address.City,
+                State = user.Address.State,
+                Country = user.Address.Country,
+                ZipCode = user.Address.ZipCode
             };
         }
 
@@ -105,6 +134,38 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            if (Input.FirstName != user.FirstName)
+            {
+                user.FirstName = Input.FirstName;
+            }
+
+            if (Input.LastName != user.LastName)
+            {
+                user.LastName = Input.LastName;
+            }
+
+            if (Input.Street != user.Address.Street)
+            {
+                user.Address.Street = Input.Street;
+            }
+
+            if (Input.State != user.Address.State)
+            {
+                user.Address.State = Input.State;
+            }
+            if (Input.City != user.Address.City)
+            {
+                user.Address.City = Input.City;
+            }
+            if (Input.Country != user.Address.Country)
+            {
+                user.Address.Country = Input.Country;
+            }
+            if (Input.ZipCode != user.Address.ZipCode)
+            {
+                user.Address.ZipCode = Input.ZipCode;
             }
 
             await _signInManager.RefreshSignInAsync(user);

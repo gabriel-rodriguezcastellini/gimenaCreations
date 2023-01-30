@@ -73,11 +73,6 @@ public class CartService : ICartService
         return JsonSerializer.Deserialize<CustomerBasket>(basket!, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
-    public Task<Models.Order> GetOrderDraftAsync(string basketId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<CustomerBasket> SetQuantitiesAsync(string userId, Dictionary<string, int> quantities)
     {
         var basket = await GetBasketAsync(userId);

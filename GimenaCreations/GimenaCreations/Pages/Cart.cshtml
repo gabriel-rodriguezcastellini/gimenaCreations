@@ -1,10 +1,13 @@
 ﻿@page
-@model GimenaCreations.Pages.Cart.IndexModel
+@using GimenaCreations.ViewModels;
+@model CartModel
 @{
     ViewData["Title"] = "Cart";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+    var headerList = new List<Header> { new Header { Page = "Index", Text = "Back to home" } };
 }
 
+<partial name="_Header" model="headerList" />
 <form method="post">
     <table class="table align-middle table-borderless">
         <thead>
@@ -61,7 +64,7 @@
                 <th></th>
                 <th></th>
                 <th class="text-center"><input class="btn btn-success" type="submit" asp-page-handler="Update" value="UPDATE" /></th>
-                <th class="text-center"><input class="btn btn-success" type="submit" asp-page-handler="Update" value="CHECKOUT" /></th>
+                <th class="text-center"><input class="btn btn-success" type="submit" asp-page-handler="Update" name="action" value="CHECKOUT" /></th>
             </tr>
         </tfoot>
     </table>

@@ -1,7 +1,10 @@
-﻿namespace GimenaCreations.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GimenaCreations.Models;
 
 public class CustomerBasket
 {
+    [Required]
     public string BuyerId { get; set; } = null!;
 
     public List<BasketItem> Items { get; set; } = new();

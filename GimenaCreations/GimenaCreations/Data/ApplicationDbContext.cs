@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace GimenaCreations.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -15,6 +15,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<CatalogItem> CatalogItems { get; set; } = null!;
     public DbSet<CatalogBrand> CatalogBrands { get; set; } = null!;
     public DbSet<CatalogType> CatalogTypes { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -3,34 +3,34 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.CatalogTypes
+namespace GimenaCreations.Pages
 {
-    public class DetailsModel : PageModel
+    public class CatalogItemsModel : PageModel
     {
         private readonly Data.ApplicationDbContext _context;
 
-        public DetailsModel(Data.ApplicationDbContext context)
+        public CatalogItemsModel(Data.ApplicationDbContext context)
         {
             _context = context;
         }
 
-      public CatalogType CatalogType { get; set; }
+        public CatalogItem CatalogItem { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.CatalogTypes == null)
+            if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();
             }
 
-            var catalogtype = await _context.CatalogTypes.FirstOrDefaultAsync(m => m.Id == id);
-            if (catalogtype == null)
+            var catalogitem = await _context.CatalogItems.Include(m => m.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            if (catalogitem == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
-                CatalogType = catalogtype;
+                CatalogItem = catalogitem;
             }
             return Page();
         }
