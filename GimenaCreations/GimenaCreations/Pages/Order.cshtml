@@ -1,21 +1,17 @@
 ﻿@page
-@using System.ComponentModel.DataAnnotations;
 @using System.Reflection;
-@using GimenaCreations.ViewModels;
+@using GimenaCreations.Extensions;
 @model OrderModel
 @{
     ViewData["Title"] = "Cart";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
-    var headerList = new List<Header> { new Header { Page = "Cart", Text = "Back to cart" } };
+    Layout = "~/Pages/Shared/_Layout.cshtml";    
 }
-
-<partial name="_Header" model="headerList" />
 
 
 <!-- Heading -->
 <h2 class="my-5 text-center">Checkout form</h2>
 
-<form method="post">    
+<form method="post">
     <!--Grid row-->
     <div class="row">
         <!--Grid column-->
@@ -47,7 +43,6 @@
                     <!--Grid column-->
                 </div>
                 <!--Grid row-->
-
                 <!--address-->
                 <p class="mb-0">
                     Address

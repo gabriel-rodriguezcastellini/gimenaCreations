@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace GimenaCreations;
+namespace GimenaCreations.Pagination;
 
 public class PaginatedList<T> : List<T>
 {

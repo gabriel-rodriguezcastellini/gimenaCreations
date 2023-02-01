@@ -1,5 +1,7 @@
+using GimenaCreations.Contracts;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +14,17 @@ public class OrderModel : PageModel
 {
     private readonly ICartService _cartService;
     private readonly IOrderService _orderService;
+    private readonly ICatalogService _catalogService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IBus bus;
 
-    public OrderModel(ICartService cartService, UserManager<ApplicationUser> userManager, IOrderService orderService)
+    public OrderModel(ICartService cartService, UserManager<ApplicationUser> userManager, IOrderService orderService, ICatalogService catalogService, IBus bus)
     {
         _cartService = cartService;
         _userManager = userManager;
         _orderService = orderService;
+        _catalogService = catalogService;
+        this.bus = bus;
     }
 
     [BindProperty]
@@ -41,10 +47,17 @@ public class OrderModel : PageModel
         };
     }
 
+    /// <summary>
+    /// Crea la orden, el stock debe ser actualizado sincrónicamente, porque si se hace asíncronicamente da error EF Core
+    /// https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#avoiding-dbcontext-threading-issues
+    /// </summary>
+    /// <returns></returns>
     public async Task<IActionResult> OnPostAsync()
     {
         var order = await _cartService.CheckoutAsync(Checkout, _userManager.GetUserId(HttpContext.User));
         await _orderService.CreateOrderAsync(order);
-        return RedirectToPage("OrderSubmitted");
+        order.Items.ToList().ForEach(x => _catalogService.UpdateCatalogItemStockAsync(x.CatalogItemId, -x.Units).Wait());
+        await bus.Publish(new OrderStatusChanged(order.Id, order.Status, order.ApplicationUserId));
+        return RedirectToPage("OrderManagement");
     }
 }

@@ -95,7 +95,7 @@ public class ApplicationDbContextSeed
         };
     }
 
-    private AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3)
+    private static AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3)
     {
         return Policy.Handle<SqlException>().
             WaitAndRetryAsync(

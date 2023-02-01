@@ -128,6 +128,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Address = new();
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Address.Country = Input.Country;

@@ -1,9 +1,15 @@
+using GimenaCreations;
+using GimenaCreations.Consumers;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
+using GimenaCreations.Settings;
+using MassTransit;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +65,30 @@ services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 services.AddTransient<ICartService, CartService>();
 services.AddTransient<ICatalogService, CatalogService>();
 services.AddTransient<IOrderService, OrderService>();
+services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
+
+services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+
+    // By default, sagas are in-memory, but should be changed to a durable
+    // saga repository.
+    x.SetInMemorySagaRepositoryProvider();
+
+    var entryAssembly = Assembly.GetEntryAssembly();
+
+    x.AddConsumers(entryAssembly);
+    x.AddSagaStateMachines(entryAssembly);
+    x.AddSagas(entryAssembly);
+    x.AddActivities(entryAssembly);
+
+    x.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+services.Configure<BackgroundTask>(builder.Configuration);
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -83,4 +113,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+
+app.MapHub<NotificationHub>("/orderstatus", options =>
+{
+    options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+});
+
 app.Run();

@@ -8,10 +8,7 @@ public enum OrderStatus
     Submited = 1,
 
     [Display(Name = "Awaiting validation")]
-    AwaitingValidation = 2,
-
-    [Display(Name = "Stock confirmed")]
-    StockConfirmed = 3,
+    AwaitingValidation = 2,    
 
     [Display(Name = "Paid")]
     Paid = 4,

@@ -5,6 +5,15 @@
     {
       "library": "mdbootstrap@4.20.0",
       "destination": "wwwroot/lib/mdbootstrap/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/js/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
     }
   ]
 }

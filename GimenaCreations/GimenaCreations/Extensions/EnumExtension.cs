@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace GimenaCreations;
+namespace GimenaCreations.Extensions;
 
 public static class EnumExtension
 {

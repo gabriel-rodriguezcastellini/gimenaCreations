@@ -1,4 +1,5 @@
 ﻿using GimenaCreations.Models;
+using GimenaCreations.Pagination;
 
 namespace GimenaCreations.Services
 {
@@ -7,5 +8,6 @@ namespace GimenaCreations.Services
         Task<PaginatedList<CatalogItem>> GetCatalogItemsAsync(string searchString, int? catalogTypeId, int? pageIndex);
         Task<IList<CatalogType>> GetCatalogTypesAsync();
         Task<CatalogItem?> GetCatalogItemAsync(int? id);
+        Task UpdateCatalogItemStockAsync(int catalogItemId, int substractedQuantity);
     }
 }

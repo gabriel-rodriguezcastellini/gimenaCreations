@@ -1,5 +1,6 @@
 ﻿using GimenaCreations.Data;
 using GimenaCreations.Models;
+using GimenaCreations.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace GimenaCreations.Services
@@ -58,5 +59,13 @@ namespace GimenaCreations.Services
         }
 
         public async Task<IList<CatalogType>> GetCatalogTypesAsync() => await _context.CatalogTypes.ToListAsync();
+
+        public async Task UpdateCatalogItemStockAsync(int catalogItemId, int substractedQuantity)
+        {
+            var catalogItem = await _context.CatalogItems.FirstAsync(x=> x.Id == catalogItemId);
+            catalogItem.AvailableStock += substractedQuantity;
+            _context.Update(catalogItem);
+            await _context.SaveChangesAsync();
+        }
     }
 }

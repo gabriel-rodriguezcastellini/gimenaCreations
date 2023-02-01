@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@using Microsoft.AspNetCore.Authentication
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -62,7 +65,6 @@
             <!-- Container wrapper -->
         </nav>
         <!-- Navbar -->
-        
         <!-- Carousel wrapper -->
         <div id="introCarousel" class="carousel slide carousel-fade shadow-2-strong" data-mdb-ride="carousel">
             <!-- Indicators -->
@@ -148,7 +150,7 @@
         </main>
     </div>
 
-    <footer class="text-center text-white mt-auto" style="background-color: #607D8B">        
+    <footer class="text-center text-white mt-auto" style="background-color: #607D8B">
         <div class="container">
             <!-- Section: Social media -->
             <section>
@@ -181,10 +183,31 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>    
     <!-- MDB -->
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="text/javascript">
+        if ('@SignInManager.IsSignedIn(User)' === 'True') {
+            var connection = new signalR.HubConnectionBuilder().withUrl("/orderstatus").build();
+
+            connection.on("UpdatedOrderState", function (user, message) {
+                console.log('message received');
+                console.log(user);
+                console.log(message);
+                alert('Message received');
+            });
+
+            connection.start().then(function () {
+                console.log('User Registered to Signalr Hub');
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    </script>
 </body>
 </html>
