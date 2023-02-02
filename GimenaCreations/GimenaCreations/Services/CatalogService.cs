@@ -52,7 +52,7 @@ namespace GimenaCreations.Services
                 }
 
                 var pageSize = _configuration.GetValue("PageSize", 4);
-                return await PaginatedList<CatalogItem>.CreateAsync(catalogItems.AsNoTracking().Include(c => c.CatalogBrand).Include(c => c.CatalogType), pageIndex ?? 1, pageSize);
+                return await PaginatedList<CatalogItem>.CreateAsync(catalogItems.AsNoTracking().Include(c => c.CatalogType), pageIndex ?? 1, pageSize);
             }
 
             return items;

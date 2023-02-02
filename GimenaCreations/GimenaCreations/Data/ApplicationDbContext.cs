@@ -12,15 +12,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<CatalogItem> CatalogItems { get; set; } = null!;
-    public DbSet<CatalogBrand> CatalogBrands { get; set; } = null!;
+    public DbSet<CatalogItem> CatalogItems { get; set; } = null!;    
     public DbSet<CatalogType> CatalogTypes { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
-    {
-        builder.ApplyConfiguration(new CatalogBrandEntityTypeConfiguration());
+    {        
         builder.ApplyConfiguration(new CatalogItemEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogTypeEntityTypeConfiguration());
         builder.ApplyConfiguration(new OrderEntityTypeConfiguration());
