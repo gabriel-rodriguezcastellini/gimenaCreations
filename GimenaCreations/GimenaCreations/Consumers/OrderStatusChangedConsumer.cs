@@ -1,4 +1,5 @@
 ﻿using GimenaCreations.Contracts;
+using GimenaCreations.Extensions;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -21,6 +22,6 @@ public sealed class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     public async Task Consume(ConsumeContext<OrderStatusChanged> context)
     {
         _logger.LogInformation("Received message: {Message}", JsonSerializer.Serialize(context.Message));
-        await hubContext.Clients.User(context.Message.UserId).SendAsync("UpdatedOrderState", new { context.Message.OrderId, context.Message.OrderStatus });
+        await hubContext.Clients.User(context.Message.UserId).SendAsync("UpdatedOrderState", new { context.Message.OrderId, status = context.Message.OrderStatus.GetDisplayName() });
     }
 }

@@ -5,22 +5,23 @@ using GimenaCreations.Settings;
 using MassTransit;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GimenaCreations.BackgroundTasks;
 
 public class GracePeriodManagerService : BackgroundService
 {
     private readonly ILogger<GracePeriodManagerService> logger;
-    private readonly ApplicationDbContext context;
     private readonly IBus bus;
     private readonly BackgroundTask backgroundTask;
+    private readonly IServiceScopeFactory serviceScopeFactory;
 
-    public GracePeriodManagerService(ILogger<GracePeriodManagerService> logger, ApplicationDbContext context, IBus bus, BackgroundTask backgroundTask)
+    public GracePeriodManagerService(ILogger<GracePeriodManagerService> logger, IBus bus, IOptions<BackgroundTask> backgroundTask, IServiceScopeFactory serviceScopeFactory)
     {
         this.logger = logger;
-        this.context = context;
         this.bus = bus;
-        this.backgroundTask = backgroundTask;
+        this.backgroundTask = backgroundTask.Value;
+        this.serviceScopeFactory = serviceScopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -55,10 +56,13 @@ public class GracePeriodManagerService : BackgroundService
     private async Task<IEnumerable<Order>> GetConfirmedGracePeriodOrdersAsync()
     {
         IEnumerable<Order> orders = new List<Order>();
-        
+
         try
         {
-            orders = await context.Orders.Include(x=>x.ApplicationUser).Where(x => x.Date <= DateTime.Now.AddMinutes(backgroundTask.GracePeriodTime) && x.Status == OrderStatus.Submited)
+            using var scope = serviceScopeFactory.CreateScope();
+            using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            orders = await context.Orders.Include(x => x.ApplicationUser)
+                .Where(x => x.Date <= DateTime.UtcNow.AddMinutes(-backgroundTask.GracePeriodTime) && x.Status == OrderStatus.Submited)
                 .ToListAsync();
         }
         catch (SqlException exception)

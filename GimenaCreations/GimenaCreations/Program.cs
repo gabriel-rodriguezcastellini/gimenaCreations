@@ -1,5 +1,5 @@
 using GimenaCreations;
-using GimenaCreations.Consumers;
+using GimenaCreations.BackgroundTasks;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
@@ -88,7 +88,7 @@ services.AddMassTransit(x =>
     });
 });
 
-services.Configure<BackgroundTask>(builder.Configuration);
+services.Configure<BackgroundTask>(builder.Configuration).AddOptions().AddHostedService<GracePeriodManagerService>();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
