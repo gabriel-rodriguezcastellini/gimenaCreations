@@ -91,7 +91,8 @@ public class OrderModel : PageModel
                     Pending = _configuration.GetValue<string>("MercadoPago:BackUrls:Pending"),
                     Success = _configuration.GetValue<string>("MercadoPago:BackUrls:Success")
                 },
-                NotificationUrl = $"{_configuration.GetValue<string>("MercadoPago:NotificationUrl")}?source_news={_configuration.GetValue<string>("MercadoPago:SourceNews")}"
+                NotificationUrl = $"{_configuration.GetValue<string>("MercadoPago:NotificationUrl")}?source_news={_configuration.GetValue<string>("MercadoPago:SourceNews")}",
+                AutoReturn = "approved"
             });
 
             return RedirectPermanent(preference.InitPoint);

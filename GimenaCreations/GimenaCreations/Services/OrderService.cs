@@ -25,4 +25,15 @@ public class OrderService : IOrderService
 
     public async Task<Order> GetOrderByIdAsync(int id, string userId) => 
         await _context.Orders.Include(x => x.Address).Include(x => x.Items).FirstAsync(x => x.Id == id && x.ApplicationUserId == userId);
+
+    public async Task<Order> GetOrderByIdAsync(int id) =>
+        await _context.Orders.Include(x => x.Address).Include(x => x.Items).FirstAsync(x => x.Id == id);
+
+    public async Task UpdateOrderStatusAsync(int id, OrderStatus orderStatus)
+    {
+        var order = await _context.Orders.FirstAsync(x => x.Id == id);
+        order.Status = orderStatus;
+        _context.Update(order);
+        await _context.SaveChangesAsync();
+    }
 }
