@@ -27,10 +27,6 @@
                 <th class="text-center">@(((OrderStatus)item.Status).GetDisplayName())</th>
                 <th class="text-center">
                     <a asp-page="OrderDetail" asp-route-orderId="@item.Id">Detail</a>
-                    @if (item.Status == OrderStatus.Submited)
-                    {
-                        <a asp-page="OrderManagement" asp-page-handler="Cancel" asp-route-orderId="@item.Id" class="ml-3 text-danger">Cancel</a>
-                    }
                 </th>
             </tr>
         }

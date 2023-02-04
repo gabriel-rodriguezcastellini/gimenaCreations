@@ -8,15 +8,7 @@ public class OrderService : IOrderService
 {
     private readonly ApplicationDbContext _context;
 
-    public OrderService(ApplicationDbContext context) => _context = context;
-
-    public async Task CancelOrderAsync(Order order)
-    {
-        order.Status = OrderStatus.Cancelled;
-        order.Description = "The order was cancelled.";
-        _context.Update(order);
-        await _context.SaveChangesAsync();
-    }
+    public OrderService(ApplicationDbContext context) => _context = context;    
 
     public async Task CreateOrderAsync(Order order)
     {

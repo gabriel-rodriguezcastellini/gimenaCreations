@@ -2,6 +2,8 @@ using GimenaCreations.Contracts;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
 using MassTransit;
+using MercadoPago.Client.Preference;
+using MercadoPago.Config;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +19,21 @@ public class OrderModel : PageModel
     private readonly ICatalogService _catalogService;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IBus bus;
+    private readonly IConfiguration _configuration;
 
-    public OrderModel(ICartService cartService, UserManager<ApplicationUser> userManager, IOrderService orderService, ICatalogService catalogService, IBus bus)
+    public OrderModel(ICartService cartService,
+        UserManager<ApplicationUser> userManager,
+        IOrderService orderService,
+        ICatalogService catalogService,
+        IBus bus,
+        IConfiguration configuration)
     {
         _cartService = cartService;
         _userManager = userManager;
         _orderService = orderService;
         _catalogService = catalogService;
         this.bus = bus;
+        _configuration = configuration;
     }
 
     [BindProperty]
@@ -57,7 +66,37 @@ public class OrderModel : PageModel
         var order = await _cartService.CheckoutAsync(Checkout, _userManager.GetUserId(HttpContext.User));
         await _orderService.CreateOrderAsync(order);
         order.Items.ToList().ForEach(x => _catalogService.UpdateCatalogItemStockAsync(x.CatalogItemId, -x.Units).Wait());
-        await bus.Publish(new OrderStatusChanged(order.Id, order.Status, order.ApplicationUserId));
+        await bus.Publish(new OrderStatusChangedToSubmitted(order.Id, order.Status, order.ApplicationUserId, order.PaymentMethod));
+
+        if (order.PaymentMethod == PaymentMethod.MercadoPago)
+        {
+            MercadoPagoConfig.AccessToken = _configuration.GetValue<string>("MercadoPago:AccessToken");
+
+            // Crea la preferencia
+            var preference = await new PreferenceClient().CreateAsync(new PreferenceRequest
+            {
+                Items = order.Items
+                .Select(x => new PreferenceItemRequest
+                {
+                    Title = x.ProductName,
+                    Quantity = x.Units,
+                    CurrencyId = "ARS",
+                    UnitPrice = x.UnitPrice
+                }).ToList(),
+                Purpose = "wallet_purchase",
+                ExternalReference = order.Id.ToString(),
+                BackUrls = new PreferenceBackUrlsRequest
+                {
+                    Failure = _configuration.GetValue<string>("MercadoPago:BackUrls:Failure"),
+                    Pending = _configuration.GetValue<string>("MercadoPago:BackUrls:Pending"),
+                    Success = _configuration.GetValue<string>("MercadoPago:BackUrls:Success")
+                },
+                NotificationUrl = $"{_configuration.GetValue<string>("MercadoPago:NotificationUrl")}?source_news={_configuration.GetValue<string>("MercadoPago:SourceNews")}"
+            });
+
+            return RedirectPermanent(preference.InitPoint);
+        }
+
         return RedirectToPage("OrderManagement");
     }
 }

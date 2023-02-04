@@ -11,15 +11,13 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GimenaCreations.styles.css" asp-append-version="true" />
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css"
-          rel="stylesheet" />
-    <link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />    
+
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header>
@@ -186,38 +184,25 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/lib/toastr.js/toastr.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>    
     <!-- MDB -->
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
+    <script type="text/javascript"src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>    
 
     @await RenderSectionAsync("Scripts", required: false)
 
     <script type="text/javascript">
-        if ('@SignInManager.IsSignedIn(User)' === 'True') {
-            var timerId;
+        if ('@SignInManager.IsSignedIn(User)' === 'True') {            
             var connection = new signalR.HubConnectionBuilder().withUrl("/orderstatus").build();
 
             connection.on("UpdatedOrderState", function (message) {                
                 toastr.success('Updated to status: ' + message.status, 'Order Id: ' + message.orderId);
-                
-                if (window.location.pathname.split("/").pop() === 'OrderManagement') {
-                    refreshOrderList();
-                }
             });
 
             connection.start().then(function () {
                 console.log('User Registered to Signalr Hub');
             }).catch(function (err) {
                 return console.error(err.toString());
-            });
-
-            function refreshOrderList() {
-                clearTimeout(timerId);
-                timerId = setTimeout(function () {
-                    window.location.reload();
-                }, 1000);
-            }
+            });            
         }
     </script>
 </body>

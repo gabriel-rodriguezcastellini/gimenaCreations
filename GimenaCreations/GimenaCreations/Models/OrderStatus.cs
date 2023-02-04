@@ -14,8 +14,5 @@ public enum OrderStatus
     Paid = 4,
 
     [Display(Name = "Shipped")]
-    Shipped = 5,
-
-    [Display(Name = "Cancelled")]
-    Cancelled = 6
+    Shipped = 5    
 }

@@ -5,9 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>aspnet-GimenaCreations-7aa7ff88-1c76-4d44-96c1-538978fe1ef2</UserSecretsId>
-		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-	</PropertyGroup>
+	</PropertyGroup>	
 
 	<ItemGroup>
 		<Content Update="appsettings.json">
@@ -30,7 +28,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MassTransit" Version="8.0.12" />		
+		<PackageReference Include="MassTransit" Version="8.0.12" />
+		<PackageReference Include="mercadopago-sdk" Version="2.2.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.13" />

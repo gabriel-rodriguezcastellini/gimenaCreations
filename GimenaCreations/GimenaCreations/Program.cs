@@ -1,15 +1,16 @@
 using GimenaCreations;
-using GimenaCreations.BackgroundTasks;
+using GimenaCreations.Consumers;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
-using GimenaCreations.Settings;
 using MassTransit;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -67,6 +69,12 @@ services.AddTransient<ICatalogService, CatalogService>();
 services.AddTransient<IOrderService, OrderService>();
 services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
 
+services.AddHttpClient<WebhookNotificationConsumer>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MercadoPago:BaseUrl"));
+    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", builder.Configuration.GetValue<string>("MercadoPago:AccessToken"));
+});
+
 services.AddMassTransit(x =>
 {
     x.SetKebabCaseEndpointNameFormatter();
@@ -88,7 +96,6 @@ services.AddMassTransit(x =>
     });
 });
 
-services.Configure<BackgroundTask>(builder.Configuration).AddOptions().AddHostedService<GracePeriodManagerService>();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -102,17 +109,43 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler(exceptionHandlerApp =>
+    {
+        exceptionHandlerApp.Run(async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            
+            context.Response.ContentType = Text.Plain;
+
+            await context.Response.WriteAsync("An exception was thrown.");
+
+            var exceptionHandlerPathFeature =
+                context.Features.Get<IExceptionHandlerPathFeature>();
+
+            if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
+            {
+                await context.Response.WriteAsync(" The file was not found.");
+            }
+
+            if (exceptionHandlerPathFeature?.Path == "/")
+            {
+                await context.Response.WriteAsync(" Page: Home.");
+            }
+        });
+    });
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapControllers();
 
 app.MapHub<NotificationHub>("/orderstatus", options =>
 {
