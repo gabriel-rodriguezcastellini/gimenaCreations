@@ -23,5 +23,6 @@ public class OrderService : IOrderService
         .AsNoTracking()
         .ToListAsync();
 
-    public async Task<Order> GetOrderByIdAsync(int id, string userId) => await _context.Orders.Include(x=>x.Items).FirstAsync(x => x.Id == id && x.ApplicationUserId == userId);
+    public async Task<Order> GetOrderByIdAsync(int id, string userId) => 
+        await _context.Orders.Include(x => x.Address).Include(x => x.Items).FirstAsync(x => x.Id == id && x.ApplicationUserId == userId);
 }

@@ -1,29 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Models;
+using GimenaCreations.Services;
 
 namespace GimenaCreations.Pages
 {
     public class CatalogItemsModel : PageModel
-    {
-        private readonly Data.ApplicationDbContext _context;
+    {        
+        private readonly ICatalogService _catalogService;
 
-        public CatalogItemsModel(Data.ApplicationDbContext context)
-        {
-            _context = context;
+        public CatalogItemsModel(ICatalogService catalogService)
+        {            
+            _catalogService = catalogService;
         }
 
         public CatalogItem CatalogItem { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null || _context.CatalogItems == null)
-            {
-                return NotFound();
-            }
+        {            
+            var catalogitem = await _catalogService.GetCatalogItemAsync(id);
 
-            var catalogitem = await _context.CatalogItems.Include(m => m.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
             if (catalogitem == null)
             {
                 return NotFound();
@@ -32,6 +28,7 @@ namespace GimenaCreations.Pages
             {
                 CatalogItem = catalogitem;
             }
+
             return Page();
         }
     }

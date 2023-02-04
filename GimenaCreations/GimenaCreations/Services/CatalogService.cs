@@ -23,7 +23,7 @@ namespace GimenaCreations.Services
                 return null;
             }
 
-            var catalogitem = await _context.CatalogItems.FirstOrDefaultAsync(m => m.Id == id);
+            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
 
             if (catalogitem == null)
             {
