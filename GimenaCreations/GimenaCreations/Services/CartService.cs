@@ -122,7 +122,7 @@ public class CartService : ICartService
         if (!created)
         {
             _logger.LogInformation("Problem occur persisting the item.");
-            return null!;
+            return null;
         }
 
         _logger.LogInformation("Basket item persisted succesfully.");

@@ -5,7 +5,7 @@ namespace GimenaCreations.Models;
 public class CustomerBasket
 {
     [Required]
-    public string BuyerId { get; set; } = null!;
+    public string BuyerId { get; set; }
 
     public List<BasketItem> Items { get; set; } = new();
 

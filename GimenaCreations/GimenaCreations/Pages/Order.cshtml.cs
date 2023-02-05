@@ -37,7 +37,7 @@ public class OrderModel : PageModel
     }
 
     [BindProperty]
-    public BasketCheckout Checkout { get; set; } = null!;
+    public BasketCheckout Checkout { get; set; }
 
     public async Task OnGetAsync()
     {
@@ -66,7 +66,7 @@ public class OrderModel : PageModel
         var order = await _cartService.CheckoutAsync(Checkout, _userManager.GetUserId(HttpContext.User));
         await _orderService.CreateOrderAsync(order);
         order.Items.ToList().ForEach(x => _catalogService.UpdateCatalogItemStockAsync(x.CatalogItemId, -x.Units).Wait());
-        await bus.Publish(new OrderStatusChangedToSubmitted(order.Id, order.Status, order.ApplicationUserId, order.PaymentMethod));
+        _ = bus.Publish(new OrderStatusChangedToSubmitted(order.Id, order.Status, order.ApplicationUserId));
 
         if (order.PaymentMethod == PaymentMethod.MercadoPago)
         {

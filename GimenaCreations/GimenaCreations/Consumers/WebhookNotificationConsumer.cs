@@ -42,13 +42,13 @@ public sealed class WebhookNotificationConsumer : IConsumer<WebhookNotification>
         switch (response!.Status)
         {
             case Status.Approved:
-                await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.Paid);
+                await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.Paid, "The payment was performed.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Paid.GetDisplayName() });
                 break;
             case Status.Cancelled:
             case Status.Refunded:
             case Status.ChargedBack:            
-                await _orderService.UpdateOrderStatusAsync(Convert.ToInt32(order.Id), OrderStatus.Cancelled);
+                await _orderService.UpdateOrderStatusAsync(Convert.ToInt32(order.Id), OrderStatus.Cancelled, "The order was cancelled.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Cancelled.GetDisplayName() });
                 break;
             default:

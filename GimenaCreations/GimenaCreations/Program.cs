@@ -19,7 +19,27 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddRazorPages();
+
+builder.Services.AddRazorPages(configure =>
+{
+    configure.Conventions.AuthorizeFolder("/Admin", GimenaCreations.Models.Role.Admin);
+    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Models.Role.SuperAdmin);
+    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Models.Role.SuperAdmin);
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(GimenaCreations.Models.Role.Admin, policy =>
+    {
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Admin, GimenaCreations.Models.Role.SuperAdmin });
+    });
+
+    options.AddPolicy(GimenaCreations.Models.Role.SuperAdmin, policy =>
+    {
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.SuperAdmin });
+    });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -61,6 +81,7 @@ services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 });
+
 //Configure other services up here
 var multiplexer = ConnectionMultiplexer.Connect("localhost");
 services.AddSingleton<IConnectionMultiplexer>(multiplexer);
@@ -100,7 +121,9 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 await db.Database.MigrateAsync();
-await new ApplicationDbContextSeed().SeedAsync(db, app.Environment, scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContextSeed>>());
+
+await new ApplicationDbContextSeed()
+    .SeedAsync(db, app.Environment, scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContextSeed>>(), scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -114,7 +137,7 @@ else
         exceptionHandlerApp.Run(async context =>
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            
+
             context.Response.ContentType = Text.Plain;
 
             await context.Response.WriteAsync("An exception was thrown.");

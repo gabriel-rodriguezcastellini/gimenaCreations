@@ -50,25 +50,25 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Required, Display(Name = "First name")]
-            public string FirstName { get; set; } = null!;
+            public string FirstName { get; set; }
 
             [Required, Display(Name = "Last name")]
-            public string LastName { get; set; } = null!;
+            public string LastName { get; set; }
 
             [Required]
-            public string Street { get; set; } = null!;
+            public string Street { get; set; }
 
             [Required]
-            public string City { get; set; } = null!;
+            public string City { get; set; }
 
             [Required]
-            public string State { get; set; } = null!;
+            public string State { get; set; }
 
             [Required]
-            public string Country { get; set; } = null!;
+            public string Country { get; set; }
 
             [Required, Display(Name = "Zip code")]
-            public string ZipCode { get; set; } = null!;
+            public string ZipCode { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -124,8 +124,9 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-
+            
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
             if (Input.PhoneNumber != phoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
@@ -134,7 +135,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
-            }
+            }            
 
             if (Input.FirstName != user.FirstName)
             {
@@ -168,6 +169,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account.Manage
                 user.Address.ZipCode = Input.ZipCode;
             }
 
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

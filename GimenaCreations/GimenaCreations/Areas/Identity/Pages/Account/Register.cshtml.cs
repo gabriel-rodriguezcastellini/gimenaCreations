@@ -23,13 +23,15 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -37,6 +39,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -65,25 +68,25 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required, Display(Name = "First name")]
-            public string FirstName { get; set; } = null!;
+            public string FirstName { get; set; }
 
             [Required, Display(Name = "Last name")]
-            public string LastName { get; set; } = null!;
+            public string LastName { get; set; }
 
             [Required]
-            public string Street { get; set; } = null!;
+            public string Street { get; set; }
 
             [Required]
-            public string City { get; set; } = null!;
+            public string City { get; set; }
 
             [Required]
-            public string State { get; set; } = null!;
+            public string State { get; set; }
 
             [Required]
-            public string Country { get; set; } = null!;
+            public string Country { get; set; }
 
             [Required, Display(Name = "Zip code")]
-            public string ZipCode { get; set; } = null!;
+            public string ZipCode { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -143,6 +146,16 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if (user.Email == _configuration.GetValue<string>("AdminEmail"))
+                    {
+                        await _userManager.AddToRoleAsync(user, Role.Admin);
+                    }
+
+                    if (user.Email == _configuration.GetValue<string>("SuperAdminEmail"))
+                    {
+                        await _userManager.AddToRoleAsync(user, Role.SuperAdmin);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

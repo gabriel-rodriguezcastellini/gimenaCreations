@@ -14,7 +14,7 @@ namespace GimenaCreations.Pages
             _catalogService = catalogService;
         }
 
-        public CatalogItem CatalogItem { get; set; } = null!;
+        public CatalogItem CatalogItem { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {            

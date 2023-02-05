@@ -16,7 +16,7 @@ namespace GimenaCreations.Pages
 
         public PaginatedList<CatalogItem> CatalogItem { get; set; } = default!;
         public IList<CatalogType> CatalogType { get; set; } = default!;
-        public string CurrentFilter { get; set; } = null!;
+        public string CurrentFilter { get; set; }
         public int? CatalogTypeId { get; set; }
         public int? CatalogItemId { get; set; }
 

@@ -3,19 +3,20 @@ using Microsoft.Data.SqlClient;
 using Polly.Retry;
 using Polly;
 using System.IO.Compression;
+using Microsoft.AspNetCore.Identity;
 
 namespace GimenaCreations.Data;
 
 public class ApplicationDbContextSeed
 {
-    public async Task SeedAsync(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<ApplicationDbContextSeed> logger)
+    public async Task SeedAsync(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<ApplicationDbContextSeed> logger, RoleManager<IdentityRole> roleManager)
     {
         var policy = CreatePolicy(logger, nameof(ApplicationDbContextSeed));
 
         await policy.ExecuteAsync(async () =>
         {
             var contentRootPath = environment.ContentRootPath;
-            var picturePath = environment.WebRootPath;            
+            var picturePath = environment.WebRootPath;
 
             if (!context.CatalogTypes.Any())
             {
@@ -28,6 +29,11 @@ public class ApplicationDbContextSeed
                 await context.CatalogItems.AddRangeAsync(GetPreconfiguredItems());
                 await context.SaveChangesAsync();
                 GetCatalogItemPictures(contentRootPath, picturePath);
+            }
+
+            if (!context.Roles.Any())
+            {
+                GetIdentityRoles().ToList().ForEach(x => roleManager.CreateAsync(x).Wait());
             }
         });
     }
@@ -47,9 +53,7 @@ public class ApplicationDbContextSeed
         }
     }
 
-    private static IEnumerable<CatalogItem> GetPreconfiguredItems()
-    {
-        return new List<CatalogItem>()
+    private static IEnumerable<CatalogItem> GetPreconfiguredItems() => new List<CatalogItem>()
         {
             new() { CatalogTypeId = 2, AvailableStock = 100, Description = ".NET Bot Black Hoodie", Name = ".NET Bot Black Hoodie", Price = 19.5M, PictureFileName = "1.png" },
             new() { CatalogTypeId = 1, AvailableStock = 100, Description = ".NET Black & White Mug", Name = ".NET Black & White Mug", Price= 8.50M, PictureFileName = "2.png" },
@@ -64,29 +68,29 @@ public class ApplicationDbContextSeed
             new() { CatalogTypeId = 3, AvailableStock = 100, Description = "Cup<T> Sheet", Name = "Cup<T> Sheet", Price = 8.5M, PictureFileName = "11.png" },
             new() { CatalogTypeId = 2, AvailableStock = 100, Description = "Prism White TShirt", Name = "Prism White TShirt", Price = 12, PictureFileName = "12.png" },
         };
-    }    
 
-    private static IEnumerable<CatalogType> GetPreconfiguredCatalogTypes()
-    {
-        return new List<CatalogType>()
+    private static IEnumerable<CatalogType> GetPreconfiguredCatalogTypes() => new List<CatalogType>()
         {
             new() { Type = "Mug"},
             new() { Type = "T-Shirt" },
             new() { Type = "Sheet" },
             new() { Type = "USB Memory Stick" }
         };
-    }
 
-    private static AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3)
-    {
-        return Policy.Handle<SqlException>().
+    private static IEnumerable<IdentityRole> GetIdentityRoles() => new List<IdentityRole>
+        {
+            new(){Name="Admin"},
+            new(){Name="SuperAdmin"},
+        };
+
+    private static AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3) => Policy.Handle<SqlException>().
             WaitAndRetryAsync(
                 retryCount: retries,
                 sleepDurationProvider: retry => TimeSpan.FromSeconds(5),
                 onRetry: (exception, timeSpan, retry, ctx) =>
                 {
-                    logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}", prefix, exception.GetType().Name, exception.Message, retry, retries);
+                    logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}", 
+                        prefix, exception.GetType().Name, exception.Message, retry, retries);
                 }
             );
-    }
 }

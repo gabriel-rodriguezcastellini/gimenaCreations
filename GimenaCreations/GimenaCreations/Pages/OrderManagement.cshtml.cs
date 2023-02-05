@@ -20,7 +20,7 @@ public class OrderManagementModel : PageModel
         _catalogService = catalogService;
     }
 
-    public ICollection<Order> Orders { get; set; } = null!;
+    public ICollection<Order> Orders { get; set; }
 
     public async Task OnGetAsync()
     {

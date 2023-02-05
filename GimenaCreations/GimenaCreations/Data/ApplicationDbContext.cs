@@ -12,17 +12,26 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<CatalogItem> CatalogItems { get; set; } = null!;    
-    public DbSet<CatalogType> CatalogTypes { get; set; } = null!;
-    public DbSet<Order> Orders { get; set; } = null!;
-    public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<CatalogItem> CatalogItems { get; set; }    
+    public DbSet<CatalogType> CatalogTypes { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Purchase> Purchases { get; set; }
+    public DbSet<PurchaseItem> PurchaseItems { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<Models.File> Files { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
-    {        
+    {
+        builder.ApplyConfiguration(new ApplicationUserEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogItemEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogTypeEntityTypeConfiguration());
+        builder.ApplyConfiguration(new FileEntityTypeConfiguration());
         builder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         builder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
+        builder.ApplyConfiguration(new PurchaseEntityTypeConfiguration());
+        builder.ApplyConfiguration(new PurchaseItemEntityTypeConfiguration());
+        builder.ApplyConfiguration(new SupplierEntityTypeConfiguration());
         base.OnModelCreating(builder);
     }
 }

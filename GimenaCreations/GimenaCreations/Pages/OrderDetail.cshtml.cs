@@ -20,7 +20,7 @@ public class OrderDetailModel : PageModel
     }
 
     [BindProperty]
-    public Order Order { get; set; } = null!;
+    public Order Order { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int orderId)
     {

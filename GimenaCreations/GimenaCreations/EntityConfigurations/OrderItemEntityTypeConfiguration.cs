@@ -10,6 +10,10 @@ public class OrderItemEntityTypeConfiguration : IEntityTypeConfiguration<OrderIt
     {
         builder.ToTable("OrderItems");
         builder.HasKey(o => o.Id);
-        builder.Property(o => o.Id).UseHiLo("orderitemseq");
+        builder.Property(o => o.Id).UseHiLo("orderitemseq");                
+        builder.Property(o => o.ProductName).IsRequired();
+        builder.Property(o => o.PictureUrl).IsRequired();
+        builder.Property(o => o.UnitPrice).IsRequired();
+        builder.Property(o => o.Units).IsRequired();
     }
 }

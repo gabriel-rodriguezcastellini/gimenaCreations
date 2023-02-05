@@ -191,7 +191,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 
     <script type="text/javascript">
-        if ('@SignInManager.IsSignedIn(User)' === 'True') {            
+        if ('@SignInManager.IsSignedIn(User)' === 'True') {
             var connection = new signalR.HubConnectionBuilder().withUrl("/orderstatus").build();
 
             connection.on("UpdatedOrderState", function (message) {                
@@ -202,7 +202,7 @@
                 console.log('User Registered to Signalr Hub');
             }).catch(function (err) {
                 return console.error(err.toString());
-            });            
+            });
         }
     </script>
 </body>

@@ -19,7 +19,7 @@ namespace GimenaCreations.Pages
             _userManager = userManager;
         }
 
-        public CustomerBasket CustomerBasket { get; set; } = null!;
+        public CustomerBasket CustomerBasket { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

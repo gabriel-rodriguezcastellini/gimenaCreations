@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<Nullable>enable</Nullable>
+		<TargetFramework>net6.0</TargetFramework>		
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>aspnet-GimenaCreations-7aa7ff88-1c76-4d44-96c1-538978fe1ef2</UserSecretsId>
 	</PropertyGroup>	
@@ -50,6 +49,20 @@
 		<None Update="Setup\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\" />
+	  <Folder Include="wwwroot\css\" />
+	  <Folder Include="wwwroot\images\" />
+	  <Folder Include="wwwroot\js\" />
+	  <Folder Include="wwwroot\lib\bootstrap\" />
+	  <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
+	  <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
+	  <Folder Include="wwwroot\lib\jquery-validation\" />
+	  <Folder Include="wwwroot\lib\jquery-validation\dist\" />
+	  <Folder Include="wwwroot\lib\jquery\" />
+	  <Folder Include="wwwroot\lib\jquery\dist\" />
 	</ItemGroup>
 
 </Project>

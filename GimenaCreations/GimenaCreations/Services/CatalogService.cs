@@ -16,7 +16,7 @@ namespace GimenaCreations.Services
             _configuration = configuration;
         }
 
-        public async Task<CatalogItem?> GetCatalogItemAsync(int? id)
+        public async Task<CatalogItem> GetCatalogItemAsync(int? id)
         {
             if (_context.CatalogItems == null)
             {

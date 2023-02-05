@@ -5,14 +5,14 @@ namespace GimenaCreations.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    public ICollection<Order> Orders { get; set; } = null!;
+    public ICollection<Order> Orders { get; set; }
 
-    [Required, PersonalData]
-    public string FirstName { get; set; } = null!;
+    [PersonalData, Display(Name = "First name")]
+    public string FirstName { get; set; }
 
-    [Required, PersonalData]
-    public string LastName { get; set; } = null!;
+    [PersonalData, Display(Name = "Last name")]
+    public string LastName { get; set; }
 
-    [Required, PersonalData]
-    public Address Address { get; set; } = null!;
+    [PersonalData]
+    public Address Address { get; set; }
 }
