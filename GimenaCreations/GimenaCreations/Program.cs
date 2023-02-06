@@ -23,20 +23,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddRazorPages(configure =>
 {
     configure.Conventions.AuthorizeFolder("/Admin", GimenaCreations.Models.Role.Admin);
-    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Models.Role.SuperAdmin);
-    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Models.Role.SuperAdmin);
+    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Models.Role.Manager);
+    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Models.Role.Manager);
 });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(GimenaCreations.Models.Role.Admin, policy =>
     {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Admin, GimenaCreations.Models.Role.SuperAdmin });
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Admin, GimenaCreations.Models.Role.Manager });
     });
 
-    options.AddPolicy(GimenaCreations.Models.Role.SuperAdmin, policy =>
+    options.AddPolicy(GimenaCreations.Models.Role.Manager, policy =>
     {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.SuperAdmin });
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Manager });
     });
 });
 

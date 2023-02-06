@@ -105,7 +105,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
         }
-        
+
         public IActionResult OnGet() => RedirectToPage("./Login");
 
         public IActionResult OnPost(string provider, string returnUrl = null)
@@ -129,12 +129,19 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             {
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
-            }
+            }            
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
-            {
+            {                
+                if (!(await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey)).Active)
+                {
+                    await _signInManager.SignOutAsync();
+                    ErrorMessage = "Your account is inactive, please contact the support center.";
+                    return RedirectToPage("./Login");
+                }
+
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
@@ -159,22 +166,22 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                     Input.FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
                 }
 
-                if (info.Principal.HasClaim(c=>c.Type == ClaimTypes.Surname))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
                 {
                     Input.LastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
                 }
 
-                if (info.Principal.HasClaim(c=>c.Type == ClaimTypes.Country))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Country))
                 {
                     Input.Country = info.Principal.FindFirstValue(ClaimTypes.Country);
                 }
 
-                if (info.Principal.HasClaim(c=>c.Type == ClaimTypes.StateOrProvince))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.StateOrProvince))
                 {
                     Input.State = info.Principal.FindFirstValue(ClaimTypes.StateOrProvince);
                 }
 
-                if (info.Principal.HasClaim(c=>c.Type == ClaimTypes.StreetAddress))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.StreetAddress))
                 {
                     Input.Street = info.Principal.FindFirstValue(ClaimTypes.StreetAddress);
                 }
@@ -205,6 +212,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                 user.Address.City = Input.City;
                 user.Address.ZipCode = Input.ZipCode;
                 user.Address.Street = Input.Street;
+                user.Active = true;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user);
@@ -221,9 +229,9 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                             await _userManager.AddToRoleAsync(user, Role.Admin);
                         }
 
-                        if (user.Email == _config.GetValue<string>("SuperAdminEmail"))
+                        if (user.Email == _config.GetValue<string>("ManagerEmail"))
                         {
-                            await _userManager.AddToRoleAsync(user, Role.SuperAdmin);
+                            await _userManager.AddToRoleAsync(user, Role.Manager);
                         }
 
                         var userId = await _userManager.GetUserIdAsync(user);

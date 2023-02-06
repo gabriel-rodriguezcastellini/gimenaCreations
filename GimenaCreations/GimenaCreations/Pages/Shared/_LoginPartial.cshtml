@@ -6,16 +6,28 @@
     <a class="btn btn-link" data-mdb-ripple-color="dark" asp-page="/OrderManagement" title="Order management">My orders</a>
     @await Component.InvokeAsync(typeof(GimenaCreations.ViewComponents.Cart))
 
-    if (User.IsInRole(Role.Admin) || User.IsInRole(Role.SuperAdmin))
+    if (User.IsInRole(Role.Admin) || User.IsInRole(Role.Manager))
     {
-        <a class="btn btn-link" data-mdb-ripple-color="dark"  asp-page="/Admin/Orders/Index" title="Orders management">Orders management</a>
-    }
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-mdb-toggle="dropdown"
+            aria-expanded="false">
+                Management
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" asp-page="/Admin/Orders/Index" title="Orders management">Orders management</a></li>
 
-    if(User.IsInRole(Role.SuperAdmin))
-    {
-        <a class="btn btn-link" data-mdb-ripple-color="dark" asp-page="/Admin/Users/Index" title="Users management">Users management</a>
-    }
-
+                @if (User.IsInRole(Role.Manager))
+                {
+                    <li><a class="dropdown-item" asp-page="/Admin/Users/Index" title="Users list">Users management</a></li>
+                    <li><a class="dropdown-item" asp-page="/Admin/Roles/Index" title="Users list">Roles management</a></li>
+                }
+            </ul>
+        </div>
+    }    
+    
     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
         <button type="submit" class="btn btn-link" data-mdb-ripple-color="dark">Logout</button>
     </form>

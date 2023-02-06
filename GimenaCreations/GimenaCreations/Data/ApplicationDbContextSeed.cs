@@ -79,8 +79,8 @@ public class ApplicationDbContextSeed
 
     private static IEnumerable<IdentityRole> GetIdentityRoles() => new List<IdentityRole>
         {
-            new(){Name="Admin"},
-            new(){Name="SuperAdmin"},
+            new(){Name=Role.Admin},
+            new(){Name=Role.Manager}
         };
 
     private static AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3) => Policy.Handle<SqlException>().
@@ -89,7 +89,7 @@ public class ApplicationDbContextSeed
                 sleepDurationProvider: retry => TimeSpan.FromSeconds(5),
                 onRetry: (exception, timeSpan, retry, ctx) =>
                 {
-                    logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}", 
+                    logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}",
                         prefix, exception.GetType().Name, exception.Message, retry, retries);
                 }
             );

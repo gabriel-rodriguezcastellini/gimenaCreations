@@ -139,6 +139,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                 user.Address.City = Input.City;
                 user.Address.ZipCode = Input.ZipCode;
                 user.Address.Street = Input.Street;
+                user.Active = true;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -152,9 +153,9 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, Role.Admin);
                     }
 
-                    if (user.Email == _configuration.GetValue<string>("SuperAdminEmail"))
+                    if (user.Email == _configuration.GetValue<string>("ManagerEmail"))
                     {
-                        await _userManager.AddToRoleAsync(user, Role.SuperAdmin);
+                        await _userManager.AddToRoleAsync(user, Role.Manager);
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

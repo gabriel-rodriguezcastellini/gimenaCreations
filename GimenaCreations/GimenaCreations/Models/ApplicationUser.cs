@@ -15,4 +15,6 @@ public class ApplicationUser : IdentityUser
 
     [PersonalData]
     public Address Address { get; set; }
+
+    public bool Active { get; set; }
 }
