@@ -36,12 +36,12 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Users[0].PhoneNumber)
-            </th>            
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model.Users)
+        @foreach (var item in Model.Users)
         {
             <tr>
                 <td>
@@ -72,8 +72,16 @@
                     @Html.DisplayFor(modelItem=>item.PhoneNumber)
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    <form method="post">
+                        @if (item.Id != Model.CurrentUserId && 
+                            (!item.Roles.Any(x => x == Role.Admin || x == Role.Manager) && User.IsInRole(Role.Admin) 
+                                || !item.Roles.Any(x => x == Role.Manager) && User.IsInRole(Role.Manager)))
+                        {
+                            <button class="btn btn-warning mb-3" type="submit" asp-page-handler="ChangeStatus"
+                            asp-route-id="@item.Id">@(item.Active ? "Deactivate" : "Activate")</button>
+                        }
+                        <a asp-page="./Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    </form>
                 </td>
             </tr>
         }
