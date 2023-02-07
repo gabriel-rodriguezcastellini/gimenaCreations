@@ -18,6 +18,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li><a class="dropdown-item" asp-page="/Admin/Orders/Index" title="Orders management">Orders management</a></li>
+                <li><a class="dropdown-item" asp-page="/Admin/CatalogItems/Index" title="Catalog management">Catalog management</a></li>
 
                 @if (User.IsInRole(Role.Manager))
                 {
@@ -26,8 +27,8 @@
                 }
             </ul>
         </div>
-    }    
-    
+    }
+
     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
         <button type="submit" class="btn btn-link" data-mdb-ripple-color="dark">Logout</button>
     </form>

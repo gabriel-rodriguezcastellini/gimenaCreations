@@ -88,6 +88,7 @@ services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 services.AddTransient<ICartService, CartService>();
 services.AddTransient<ICatalogService, CatalogService>();
 services.AddTransient<IOrderService, OrderService>();
+services.AddTransient<IFileService, FileService>();
 services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
 
 services.AddHttpClient<WebhookNotificationConsumer>(client =>

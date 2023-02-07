@@ -26,7 +26,13 @@
                 <th class="text-center">$ @item.GetTotal()</th>
                 <th class="text-center">@(((OrderStatus)item.Status).GetDisplayName())</th>
                 <th class="text-center">
-                    <a asp-page="OrderDetail" asp-route-orderId="@item.Id">Detail</a>
+                    <a asp-page="OrderDetail" asp-route-orderId="@item.Id">Detail</a> |
+                    @if (item.Items.Any(x => x.Files.Any()))
+                    {
+                        <form method="post">
+                            <input type="submit" asp-route-orderId="@item.Id" value="Download files" class="btn btn-primary" />
+                        </form>
+                    }
                 </th>
             </tr>
         }

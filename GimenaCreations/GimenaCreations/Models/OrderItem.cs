@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GimenaCreations.Models;
 
@@ -7,10 +8,13 @@ public class OrderItem
     public int Id { get; set; }
     public int OrderId { get; set; }
     public Order Order { get; set; }
+
+    [Display(Name = "Catalog ")]
     public int CatalogItemId { get; set; }
+
     public CatalogItem CatalogItem { get; set; }
 
-    [Display(Name ="Product name")]
+    [Display(Name = "Product name")]
     public string ProductName { get; set; }
 
     [Display(Name = "Picture")]
@@ -20,6 +24,12 @@ public class OrderItem
     public decimal UnitPrice { get; set; }
 
     public int Units { get; set; }
-    public bool RequireFile { get; set; }
+
+    [Display(Name = "Files")]
+    public bool RequiresFile { get; set; }
+
     public ICollection<File> Files { get; set; }
+
+    [NotMapped, Display(Name = "File")]
+    public IFormFile FormFile { get; set; }
 }

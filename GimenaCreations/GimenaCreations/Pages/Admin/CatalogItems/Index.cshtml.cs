@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.Orders
+namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class IndexModel : PageModel
     {
@@ -19,14 +19,14 @@ namespace GimenaCreations.Pages.Admin.Orders
             _context = context;
         }
 
-        public IList<Order> Order { get;set; } = default!;
+        public IList<CatalogItem> CatalogItem { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Orders != null)
+            if (_context.CatalogItems != null)
             {
-                Order = await _context.Orders
-                .Include(o => o.ApplicationUser).Include(x=>x.Items).ThenInclude(x=>x.Files).OrderByDescending(x=>x.Id).ToListAsync();
+                CatalogItem = await _context.CatalogItems
+                .Include(c => c.CatalogType).ToListAsync();
             }
         }
     }

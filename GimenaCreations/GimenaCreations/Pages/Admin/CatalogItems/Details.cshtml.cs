@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.Orders
+namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class DetailsModel : PageModel
     {
@@ -19,23 +19,23 @@ namespace GimenaCreations.Pages.Admin.Orders
             _context = context;
         }
 
-        public Order Order { get; set; }
+      public CatalogItem CatalogItem { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.Include(x => x.ApplicationUser).Include(x => x.Items).FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            if (catalogitem == null)
             {
                 return NotFound();
             }
-            else
+            else 
             {
-                Order = order;
+                CatalogItem = catalogitem;
             }
             return Page();
         }

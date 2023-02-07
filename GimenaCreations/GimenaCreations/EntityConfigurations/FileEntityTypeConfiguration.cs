@@ -9,6 +9,6 @@ public class FileEntityTypeConfiguration : IEntityTypeConfiguration<File>
     public void Configure(EntityTypeBuilder<File> builder)
     {
         builder.ToTable("Files");
-        builder.Property(x=>x.Path).IsRequired();
+        builder.Property(x=>x.Name).IsRequired();
     }
 }

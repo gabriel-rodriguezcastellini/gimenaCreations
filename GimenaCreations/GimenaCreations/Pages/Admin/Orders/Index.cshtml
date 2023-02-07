@@ -26,6 +26,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Order[0].ApplicationUser)
             </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Order[0].Items.First().RequiresFile)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +51,23 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ApplicationUser.FirstName)
                     @Html.DisplayFor(modelItem => item.ApplicationUser.LastName)
+                </td>
+                <td>
+                    @if (item.Items.Any(x => x.RequiresFile))
+                    {
+                        if (item.Items.Any(x => x.RequiresFile && !x.Files.Any()))
+                        {
+                            @Html.Raw("<span class='text-warning'>Files have to be uploaded</span>");
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='text-success'>Files have been uploaded</span>");
+                        }
+                    }
+                    else
+                    {
+                        @Html.Raw("<span class='text-info'>Do not require files</span>");
+                    }
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |

@@ -198,6 +198,10 @@
                 toastr.success('Updated to status: ' + message.status, 'Order Id: ' + message.orderId);
             });
 
+            connection.on("FileUploaded", function (message) {                
+                toastr.success('New file has been uploaded', 'Order Id: ' + message.orderId);
+            });
+
             connection.start().then(function () {
                 console.log('User Registered to Signalr Hub');
             }).catch(function (err) {

@@ -9,36 +9,36 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.Orders
+namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class EditModel : PageModel
     {
         private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context)
+        public EditModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [BindProperty]
-        public Order Order { get; set; } = default!;
+        public CatalogItem CatalogItem { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.Include(x=>x.Items).ThenInclude(x=>x.Files).FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            var catalogitem = await _context.CatalogItems.FirstOrDefaultAsync(m => m.Id == id);
+            if (catalogitem == null)
             {
                 return NotFound();
             }
-            Order = order;
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["Status"] = new SelectList(Enum.GetValues<OrderStatus>().Select(x => new { ID = (int)x, Name = x.ToString() }), "ID", "Name", (int)order.Status);
-            ViewData["PaymentMethod"] = new SelectList(Enum.GetValues<PaymentMethod>().Select(x => new { ID = (int)x, Name = x.ToString() }), "ID", "Name", (int)order.PaymentMethod);
+            CatalogItem = catalogitem;
+            ViewData["CatalogTypeId"] = new SelectList(_context.CatalogTypes, "Id", "Type");
             return Page();
         }
 
@@ -51,15 +51,26 @@ namespace GimenaCreations.Pages.Admin.Orders
                 return Page();
             }
 
-            _context.Attach(Order).State = EntityState.Modified;
-
             try
             {
+                if (CatalogItem.FormFile != null)
+                {
+                    if (CatalogItem.FormFile.Length > 0)
+                    {
+                        using (var stream = System.IO.File.Create($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.FormFile.FileName}"))
+                        {
+                            await CatalogItem.FormFile.CopyToAsync(stream);
+                            CatalogItem.PictureFileName = CatalogItem.FormFile.FileName;
+                        }
+                    }
+                }
+
+                _context.Attach(CatalogItem).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(Order.Id))
+                if (!CatalogItemExists(CatalogItem.Id))
                 {
                     return NotFound();
                 }
@@ -72,9 +83,9 @@ namespace GimenaCreations.Pages.Admin.Orders
             return RedirectToPage("./Index");
         }
 
-        private bool OrderExists(int id)
+        private bool CatalogItemExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.CatalogItems.Any(e => e.Id == id);
         }
     }
 }
