@@ -1,0 +1,179 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@using GimenaCreations.Pages.Admin;
+@using Microsoft.AspNetCore.Authentication
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gimena Creations</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GimenaCreations.styles.css" asp-append-version="true" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header>
+        <!-- Sidebar -->
+        <nav id="sidebarMenu"
+             class="collapse d-lg-block sidebar collapse bg-white">
+            <div class="position-sticky">
+                <div class="list-group list-group-flush mx-3 mt-4">
+                    <a asp-page="/Admin/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.WebsiteTrafficNavClass(ViewContext)">
+                        <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
+                    </a>
+                    <a asp-page="/Admin/Analytics" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.AnalyticsNavClass(ViewContext)">
+                        <i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span>
+                    </a>
+                    <a asp-page="/Admin/CatalogItems/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogNavClass(ViewContext)">
+                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog</span>
+                    </a>
+                    <a asp-page="/Admin/CatalogTypes/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogTypesNavClass(ViewContext)">
+                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog types</span>
+                    </a>
+                    <a asp-page="/Admin/Orders/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SalesNavClass(ViewContext)">
+                        <i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span>
+                    </a>
+                    <a asp-page="/Admin/Purchases/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.PurchasesNavClass(ViewContext)">
+                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span>
+                    </a>
+                    @if (User.IsInRole(Role.Manager))
+                    {
+                        <a asp-page="/Admin/Roles/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.RolesNavClass(ViewContext)">
+                            <i class="fas fa-users fa-fw me-3"></i><span>Roles</span>
+                        </a>                        
+                    }
+                    <a asp-page="/Admin/Suppliers/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SuppliersNavClass(ViewContext)">
+                        <i class="fas fa-building fa-fw me-3"></i><span>Suppliers</span>
+                    </a>
+                    @if (User.IsInRole(Role.Manager))
+                    {
+                        <a asp-page="/Admin/Users/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.UsersNavClass(ViewContext)">
+                            <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </nav>
+        <!-- Sidebar -->
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+                <!-- Toggle button -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-mdb-toggle="collapse"
+                        data-mdb-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Collapsible wrapper -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Navbar brand -->
+                    <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                        <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                             height="15"
+                             alt="MDB Logo"
+                             loading="lazy" />
+                    </a>
+
+                    <!-- Left links -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="btn btn-link" data-mdb-ripple-color="dark" asp-page="/Index">Home</a>
+                        </li>
+                    </ul>
+                    <!-- Left links -->
+                </div>
+                <!-- Collapsible wrapper -->
+                <!-- Right elements -->
+                <div class="d-flex align-items-center">
+                    <partial name="_LoginPartial" />
+                </div>
+                <!-- Right elements -->
+            </div>
+            <!-- Container wrapper -->
+        </nav>
+        <!-- Navbar -->
+    </header>
+
+    <div class="container px-0">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="text-center text-white mt-auto" style="background-color: #607D8B">
+        <div class="container">
+            <!-- Section: Social media -->
+            <section>
+
+                <!-- Facebook -->
+                <a class="btn-link btn-floating btn-lg text-white my-auto"
+                   href="#!"
+                   role="button"
+                   data-mdb-ripple-color="dark">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <!-- Instagram -->
+                <a class="btn-link btn-floating btn-lg text-white my-auto"
+                   href="#!"
+                   role="button"
+                   data-mdb-ripple-color="dark">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </section>
+            <!-- Section: Social media -->
+        </div>
+        <!-- Grid container -->
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023 Copyright: Gimena Creations
+        </div>
+        <!-- Copyright -->
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="text/javascript">
+        if ('@SignInManager.IsSignedIn(User)' === 'True') {
+            var connection = new signalR.HubConnectionBuilder().withUrl("/orderstatus").build();
+
+            connection.on("UpdatedOrderState", function (message) {
+                toastr.success('Updated to status: ' + message.status, 'Order Id: ' + message.orderId);
+            });
+
+            connection.on("FileUploaded", function (message) {
+                toastr.success('New file has been uploaded', 'Order Id: ' + message.orderId);
+            });
+
+            connection.start().then(function () {
+                console.log('User Registered to Signalr Hub');
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    </script>
+</body>
+</html>

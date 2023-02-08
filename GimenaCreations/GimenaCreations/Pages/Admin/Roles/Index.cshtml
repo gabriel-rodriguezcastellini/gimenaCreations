@@ -2,7 +2,8 @@
 @model GimenaCreations.Pages.Admin.Roles.IndexModel
 @{
     ViewData["Title"] = "Roles";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Roles;
 }
 
 <h1 class="bg-info text-white">All Roles</h1>

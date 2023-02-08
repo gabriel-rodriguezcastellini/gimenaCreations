@@ -2,17 +2,18 @@
 @model GimenaCreations.Pages.Admin.Purchases.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Purchases";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Purchases;
 }
 
 <h1>Edit</h1>
 
 <h4>Purchase</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
+<form method="post">
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Purchase.Id" />
             <div class="form-group">
@@ -48,14 +49,32 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </form>
+        </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col d-flex">
+            @foreach (var item in Model.Purchase.Items)
+            {
+                <label class="form-label my-auto">Name</label>
+                <input placeholder="@item.Name" class="form-control" disabled />
+                <label class="form-label my-auto">Quantity</label>
+                <input placeholder="@item.Quantity" class="form-control" disabled />
+                <label class="form-label my-auto">Catalog item ID</label>
+                <input placeholder="@item.CatalogItemId" class="form-control" disabled />
+                <label class="form-label my-auto">Price</label>
+                <input placeholder="@item.Price" class="form-control" disabled />
+                <a class="my-auto" asp-page="/Admin/PurchaseItems/Edit" asp-route-id="@item.Id">Edit</a>
+            }
+        </div>
+    </div>
+</form>
 
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

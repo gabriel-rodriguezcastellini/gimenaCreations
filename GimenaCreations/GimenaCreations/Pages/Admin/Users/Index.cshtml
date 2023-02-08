@@ -1,8 +1,9 @@
 ﻿@page
 @model GimenaCreations.Pages.Admin.Users.IndexModel
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Users";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Users;
 }
 
 <h1>Index</h1>
@@ -79,8 +80,7 @@
                         {
                             <button class="btn btn-warning mb-3" type="submit" asp-page-handler="ChangeStatus"
                             asp-route-id="@item.Id">@(item.Active ? "Deactivate" : "Activate")</button>
-                        }
-                        <a asp-page="./Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                        }                        
                     </form>
                 </td>
             </tr>

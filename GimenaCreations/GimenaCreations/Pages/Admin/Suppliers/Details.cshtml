@@ -2,8 +2,9 @@
 @model GimenaCreations.Pages.Admin.Suppliers.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Suppliers";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Suppliers;
 }
 
 <h1>Details</h1>
@@ -49,10 +50,10 @@
             @Html.DisplayFor(model => model.Supplier.Email)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.WebSite)
+            @Html.DisplayNameFor(model => model.Supplier.Website)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.WebSite)
+            <a href="@Model.Supplier.Website" target="_blank">@Model.Supplier.Website</a>
         </dd>
     </dl>
 </div>

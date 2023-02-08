@@ -2,8 +2,9 @@
 @model GimenaCreations.Pages.Admin.OrderItems.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Sales";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Sales;
 }
 
 <h1>Edit</h1>
@@ -57,7 +58,7 @@
 </div>
 
 <div>
-    <a asp-page="/Admin/Orders/Index">Back to List</a>
+    <a asp-page="/Admin/Orders/Edit" asp-route-id="@Model.OrderItem.OrderId">Back</a>
 </div>
 
 @section Scripts {

@@ -10,7 +10,7 @@ public class SupplierEntityTypeConfiguration : IEntityTypeConfiguration<Supplier
     {
         builder.ToTable("Suppliers");
         builder.HasKey(t => t.Id);
-        builder.Property(x=>x.WebSite).IsRequired();
+        builder.Property(x=>x.Website).IsRequired();
         builder.Property(x=>x.Cuit).IsRequired();
         builder.Property(x=>x.AfipResponsibility).IsRequired();
         builder.Property(x=>x.CompanyAddress).IsRequired();

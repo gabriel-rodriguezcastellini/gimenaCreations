@@ -30,13 +30,13 @@ namespace GimenaCreations.Pages.Admin.Purchases
                 return NotFound();
             }
 
-            var purchase =  await _context.Purchases.FirstOrDefaultAsync(m => m.Id == id);
+            var purchase =  await _context.Purchases.Include(x=>x.Items).FirstOrDefaultAsync(m => m.Id == id);
             if (purchase == null)
             {
                 return NotFound();
             }
             Purchase = purchase;
-           ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "AfipResponsibility");
+           ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "Name");
             return Page();
         }
 

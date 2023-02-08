@@ -28,7 +28,7 @@ namespace GimenaCreations.Pages.Admin.Purchases
                 return NotFound();
             }
 
-            var purchase = await _context.Purchases.FirstOrDefaultAsync(m => m.Id == id);
+            var purchase = await _context.Purchases.Include(x=>x.Supplier).FirstOrDefaultAsync(m => m.Id == id);
             if (purchase == null)
             {
                 return NotFound();

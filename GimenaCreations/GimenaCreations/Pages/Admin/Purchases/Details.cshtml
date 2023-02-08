@@ -2,8 +2,9 @@
 @model GimenaCreations.Pages.Admin.Purchases.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Purchases";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Purchases;
 }
 
 <h1>Details</h1>
@@ -16,7 +17,7 @@
             @Html.DisplayNameFor(model => model.Purchase.Supplier)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Purchase.Supplier.AfipResponsibility)
+            @Html.DisplayFor(model => model.Purchase.Supplier.Name)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Purchase.InvoiceNumber)

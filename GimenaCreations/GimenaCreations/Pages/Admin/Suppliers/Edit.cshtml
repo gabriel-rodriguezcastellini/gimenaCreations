@@ -2,8 +2,9 @@
 @model GimenaCreations.Pages.Admin.Suppliers.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Suppliers";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Suppliers;
 }
 
 <h1>Edit</h1>
@@ -46,9 +47,9 @@
                 <span asp-validation-for="Supplier.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Supplier.WebSite" class="control-label"></label>
-                <input asp-for="Supplier.WebSite" class="form-control" />
-                <span asp-validation-for="Supplier.WebSite" class="text-danger"></span>
+                <label asp-for="Supplier.Website" class="control-label"></label>
+                <input asp-for="Supplier.Website" class="form-control" />
+                <span asp-validation-for="Supplier.Website" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

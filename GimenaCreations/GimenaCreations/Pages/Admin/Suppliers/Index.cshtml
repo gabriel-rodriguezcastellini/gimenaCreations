@@ -2,8 +2,9 @@
 @model GimenaCreations.Pages.Admin.Suppliers.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Suppliers";
+    Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.Suppliers;
 }
 
 <h1>Index</h1>
@@ -33,41 +34,42 @@
                 @Html.DisplayNameFor(model => model.Supplier[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].WebSite)
+                @Html.DisplayNameFor(model => model.Supplier[0].Website)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Supplier) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cuit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AfipResponsibility)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WebSite)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Supplier)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cuit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AfipResponsibility)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a href="@item.Website" target="_blank">@item.Website</a>
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
