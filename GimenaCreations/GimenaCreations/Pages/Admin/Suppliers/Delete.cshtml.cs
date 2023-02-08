@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.CatalogItems
+namespace GimenaCreations.Pages.Admin.Suppliers
 {
     public class DeleteModel : PageModel
     {
@@ -20,40 +20,40 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
         }
 
         [BindProperty]
-      public CatalogItem CatalogItem { get; set; }
+      public Supplier Supplier { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.Suppliers == null)
             {
                 return NotFound();
             }
 
-            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            var supplier = await _context.Suppliers.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (catalogitem == null)
+            if (supplier == null)
             {
                 return NotFound();
             }
             else 
             {
-                CatalogItem = catalogitem;
+                Supplier = supplier;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.Suppliers == null)
             {
                 return NotFound();
             }
-            var catalogitem = await _context.CatalogItems.FindAsync(id);
+            var supplier = await _context.Suppliers.FindAsync(id);
 
-            if (catalogitem != null)
+            if (supplier != null)
             {
-                CatalogItem = catalogitem;
-                _context.CatalogItems.Remove(CatalogItem);
+                Supplier = supplier;
+                _context.Suppliers.Remove(Supplier);
                 await _context.SaveChangesAsync();
             }
 

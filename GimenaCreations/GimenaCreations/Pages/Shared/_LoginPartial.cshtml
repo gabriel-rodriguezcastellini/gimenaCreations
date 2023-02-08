@@ -19,6 +19,9 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li><a class="dropdown-item" asp-page="/Admin/Orders/Index" title="Orders management">Orders management</a></li>
                 <li><a class="dropdown-item" asp-page="/Admin/CatalogItems/Index" title="Catalog management">Catalog management</a></li>
+                <li><a class="dropdown-item" asp-page="/Admin/CatalogTypes/Index" title="Catalog types management">Catalog types management</a></li>
+                <li><a class="dropdown-item" asp-page="/Admin/Suppliers/Index" title="Suppliers management">Suppliers management</a></li>
+                <li><a class="dropdown-item" asp-page="/Admin/Purchases/Index" title="Purchases management">Purchases management</a></li>
 
                 @if (User.IsInRole(Role.Manager))
                 {

@@ -1,6 +1,7 @@
 using GimenaCreations;
 using GimenaCreations.Consumers;
 using GimenaCreations.Data;
+using GimenaCreations.Helpers;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
 using MassTransit;
@@ -89,6 +90,7 @@ services.AddTransient<ICartService, CartService>();
 services.AddTransient<ICatalogService, CatalogService>();
 services.AddTransient<IOrderService, OrderService>();
 services.AddTransient<IFileService, FileService>();
+services.AddTransient<IFileHelper, FileHelper>();
 services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
 
 services.AddHttpClient<WebhookNotificationConsumer>(client =>

@@ -8,18 +8,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
+using GimenaCreations.Helpers;
 
 namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class EditModel : PageModel
     {
         private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly IFileHelper _fileHelper;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public EditModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, IFileHelper fileHelper)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _fileHelper = fileHelper;
         }
 
         [BindProperty]
@@ -53,16 +56,11 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
 
             try
             {
-                if (CatalogItem.FormFile != null)
+                if (CatalogItem.FormFile != null && CatalogItem.FormFile.Length > 0)
                 {
-                    if (CatalogItem.FormFile.Length > 0)
-                    {
-                        using (var stream = System.IO.File.Create($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.FormFile.FileName}"))
-                        {
-                            await CatalogItem.FormFile.CopyToAsync(stream);
-                            CatalogItem.PictureFileName = CatalogItem.FormFile.FileName;
-                        }
-                    }
+                    System.IO.File.Delete($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.PictureFileName}");
+                    await _fileHelper.CreateFileAsync($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.FormFile.FileName}", CatalogItem.FormFile);                    
+                    CatalogItem.PictureFileName = CatalogItem.FormFile.FileName;
                 }
 
                 _context.Attach(CatalogItem).State = EntityState.Modified;

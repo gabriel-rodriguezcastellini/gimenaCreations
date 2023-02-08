@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.CatalogItems
+namespace GimenaCreations.Pages.Admin.CatalogTypes
 {
     public class DeleteModel : PageModel
     {
@@ -20,40 +20,40 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
         }
 
         [BindProperty]
-      public CatalogItem CatalogItem { get; set; }
+      public CatalogType CatalogType { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.CatalogTypes == null)
             {
                 return NotFound();
             }
 
-            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            var catalogtype = await _context.CatalogTypes.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (catalogitem == null)
+            if (catalogtype == null)
             {
                 return NotFound();
             }
             else 
             {
-                CatalogItem = catalogitem;
+                CatalogType = catalogtype;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.CatalogTypes == null)
             {
                 return NotFound();
             }
-            var catalogitem = await _context.CatalogItems.FindAsync(id);
+            var catalogtype = await _context.CatalogTypes.FindAsync(id);
 
-            if (catalogitem != null)
+            if (catalogtype != null)
             {
-                CatalogItem = catalogitem;
-                _context.CatalogItems.Remove(CatalogItem);
+                CatalogType = catalogtype;
+                _context.CatalogTypes.Remove(CatalogType);
                 await _context.SaveChangesAsync();
             }
 

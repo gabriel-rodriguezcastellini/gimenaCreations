@@ -8,7 +8,7 @@
 
 <h1>Edit</h1>
 
-<h4>CatalogItem</h4>
+<h4>Catalog item</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -30,6 +30,10 @@
                 <label asp-for="CatalogItem.Price" class="control-label"></label>
                 <input asp-for="CatalogItem.Price" class="form-control" />
                 <span asp-validation-for="CatalogItem.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CatalogItem.PictureFileName" class="control-label"></label>
+                <img src="~/@Model.CatalogItem.PictureFileName" />                
             </div>
             <div class="form-group">
                 <label asp-for="CatalogItem.FormFile" class="control-label"></label>

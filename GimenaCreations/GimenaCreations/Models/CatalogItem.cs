@@ -13,6 +13,7 @@ namespace GimenaCreations.Models
         [Display(Name = "Picture")]
         public string PictureFileName { get; set; }
 
+        [Display(Name = "Catalog type")]
         public int CatalogTypeId { get; set; }
 
         [Display(Name = "Catalog type")]
@@ -33,7 +34,7 @@ namespace GimenaCreations.Models
         public ICollection<OrderItem> Items { get; set; }
         public ICollection<PurchaseItem> PurchaseItems { get; set; }
 
-        [NotMapped, Display(Name = "Picture")]
+        [NotMapped, Display(Name = "Upload new picture")]
         public IFormFile FormFile { get; set; }
     }
 }

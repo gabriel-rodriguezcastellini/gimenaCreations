@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Data;
 using GimenaCreations.Models;
 
-namespace GimenaCreations.Pages.Admin.CatalogItems
+namespace GimenaCreations.Pages.Admin.Purchases
 {
     public class DeleteModel : PageModel
     {
@@ -20,40 +20,40 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
         }
 
         [BindProperty]
-      public CatalogItem CatalogItem { get; set; }
+      public Purchase Purchase { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.Purchases == null)
             {
                 return NotFound();
             }
 
-            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            var purchase = await _context.Purchases.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (catalogitem == null)
+            if (purchase == null)
             {
                 return NotFound();
             }
             else 
             {
-                CatalogItem = catalogitem;
+                Purchase = purchase;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.CatalogItems == null)
+            if (id == null || _context.Purchases == null)
             {
                 return NotFound();
             }
-            var catalogitem = await _context.CatalogItems.FindAsync(id);
+            var purchase = await _context.Purchases.FindAsync(id);
 
-            if (catalogitem != null)
+            if (purchase != null)
             {
-                CatalogItem = catalogitem;
-                _context.CatalogItems.Remove(CatalogItem);
+                Purchase = purchase;
+                _context.Purchases.Remove(Purchase);
                 await _context.SaveChangesAsync();
             }
 
