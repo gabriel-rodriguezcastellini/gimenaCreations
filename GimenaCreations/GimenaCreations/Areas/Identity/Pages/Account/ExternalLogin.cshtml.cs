@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using GimenaCreations.Data;
 using GimenaCreations.Entities;
 using GimenaCreations.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
         private readonly IConfiguration _config;
+        private readonly ApplicationDbContext _context;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
@@ -34,7 +36,8 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender,
-            IConfiguration config)
+            IConfiguration config,
+            ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -43,6 +46,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _config = config;
+            _context = context;
         }
 
         /// <summary>
@@ -135,13 +139,25 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
-            {                
-                if (!(await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey)).Active)
+            {
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                if (!user.Active)
                 {
                     await _signInManager.SignOutAsync();
                     ErrorMessage = "Your account is inactive, please contact the support center.";
                     return RedirectToPage("./Login");
                 }
+
+                await _context.LoginLogoutAudits.AddAsync(new LoginLogoutAudit
+                {
+                    UserId = user.Id,
+                    LoginTime = DateTime.UtcNow,
+                    Username = user.UserName,
+                    FullName = user.FirstName + " " + user.LastName
+                });
+
+                await _context.SaveChangesAsync();
 
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);

@@ -20,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<AuditEntry> AuditEntries { get; set; }
     public DbSet<CatalogItem> CatalogItems { get; set; }
     public DbSet<CatalogType> CatalogTypes { get; set; }
+    public DbSet<LoginLogoutAudit> LoginLogoutAudits { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Purchase> Purchases { get; set; }

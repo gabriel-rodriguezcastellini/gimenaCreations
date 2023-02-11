@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
+using GimenaCreations.Data;
 using GimenaCreations.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +17,14 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ApplicationDbContext _context;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
             this.userManager = userManager;
+            _context = context;
         }
 
         /// <summary>
@@ -109,13 +112,23 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
-                {                    
-                    if (!(await userManager.FindByEmailAsync(Input.Email)).Active)
+                {
+                    var user = await userManager.FindByEmailAsync(Input.Email);
+                    if (!user.Active)
                     {
                         ModelState.AddModelError(string.Empty, "Your account is inactive, please contact the support center.");
                         return Page();
                     }
 
+                    await _context.LoginLogoutAudits.AddAsync(new LoginLogoutAudit
+                    {
+                        UserId = user.Id,
+                        LoginTime = DateTime.UtcNow,
+                        Username = user.UserName,
+                        FullName = user.FirstName + " " + user.LastName
+                    });
+
+                    await _context.SaveChangesAsync();
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

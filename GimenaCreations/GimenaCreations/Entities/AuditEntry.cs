@@ -10,11 +10,22 @@ public class AuditEntry
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
+
+    [Display(Name = "Entity name")]
     public string EntityName { get; set; }
+
+    [Display(Name = "Action type")]
     public string ActionType { get; set; }
+
+    [Display(Name = "User ID")]
     public string UserId { get; set; }
+
+    [Display(Name = "Date")]
     public DateTime TimeStamp { get; set; }
+
+    [Display(Name = "Entity ID")]
     public string EntityId { get; set; }
+
     public Dictionary<string, object> Changes { get; set; }
 
     [NotMapped]

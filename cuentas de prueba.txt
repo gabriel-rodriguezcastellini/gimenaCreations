@@ -1,0 +1,14 @@
+Cuentas de prueba (Mercado Pago)
+
+Comprador	
+TEST_USER_1301097698	
+R2L6ufTCrv	
+02/02/2023
+
+Vendedor - Tienda 1	
+TEST_USER_1301100173
+CmTsj4rgZf
+02/02/2023
+
+(asp net users)
+pass: Pass123$
