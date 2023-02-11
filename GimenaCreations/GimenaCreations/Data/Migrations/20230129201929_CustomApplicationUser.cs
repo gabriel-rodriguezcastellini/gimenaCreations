@@ -4,7 +4,7 @@
 
 namespace GimenaCreations.Data.Migrations
 {
-    public partial class ApplicationUser : Migration
+    public partial class CustomApplicationUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

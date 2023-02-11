@@ -12,7 +12,7 @@ public class FileService : IFileService
         _context = context;
     }
 
-    public async Task<ICollection<Models.File>> GetFilesToDownloadAsync(int orderId, string userId)
+    public async Task<ICollection<Entities.File>> GetFilesToDownloadAsync(int orderId, string userId)
     {
         return await _context.Files.Include(x => x.OrderItem).ThenInclude(x=>x.Order).Where(x => x.OrderItem.OrderId == orderId && x.OrderItem.Order.ApplicationUserId == userId)
             .ToListAsync();

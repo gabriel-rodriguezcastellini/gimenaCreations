@@ -1,4 +1,4 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
 using GimenaCreations.Pagination;
 
 namespace GimenaCreations.Services

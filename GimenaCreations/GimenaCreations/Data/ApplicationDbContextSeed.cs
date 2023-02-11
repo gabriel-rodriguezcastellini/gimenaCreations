@@ -4,12 +4,17 @@ using Polly.Retry;
 using Polly;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Identity;
+using GimenaCreations.Entities;
 
 namespace GimenaCreations.Data;
 
 public class ApplicationDbContextSeed
 {
-    public async Task SeedAsync(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<ApplicationDbContextSeed> logger, RoleManager<IdentityRole> roleManager)
+    public async Task SeedAsync(ApplicationDbContext context,
+        IWebHostEnvironment environment,
+        ILogger<ApplicationDbContextSeed> logger,
+        RoleManager<IdentityRole> roleManager,
+        UserManager<ApplicationUser> userManager)
     {
         var policy = CreatePolicy(logger, nameof(ApplicationDbContextSeed));
 
@@ -34,7 +39,7 @@ public class ApplicationDbContextSeed
             if (!context.Roles.Any())
             {
                 GetIdentityRoles().ToList().ForEach(x => roleManager.CreateAsync(x).Wait());
-            }
+            }            
         });
     }
 

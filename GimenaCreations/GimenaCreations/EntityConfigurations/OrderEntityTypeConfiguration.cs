@@ -1,4 +1,4 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

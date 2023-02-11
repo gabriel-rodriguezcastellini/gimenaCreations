@@ -1,4 +1,5 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
+using GimenaCreations.Models;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -42,9 +43,9 @@ public class CartService : ICartService
         await UpdateBasketAsync(basket);
     }
 
-    public async Task<Models.Order> CheckoutAsync(BasketCheckout checkout, string userId)
+    public async Task<Entities.Order> CheckoutAsync(BasketCheckout checkout, string userId)
     {
-        var order = new Models.Order
+        var order = new Entities.Order
         {
             Address = new()
             {

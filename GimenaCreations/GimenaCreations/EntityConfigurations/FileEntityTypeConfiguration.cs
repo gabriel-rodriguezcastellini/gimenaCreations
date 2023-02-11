@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using File = GimenaCreations.Models.File;
+using File = GimenaCreations.Entities.File;
 
 namespace GimenaCreations.EntityConfigurations;
 

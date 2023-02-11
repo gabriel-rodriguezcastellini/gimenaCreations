@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GimenaCreations.Models;
+namespace GimenaCreations.Entities;
 
 public class Purchase
 {
@@ -25,4 +25,6 @@ public class Purchase
 
     public string Reference { get; set; }
     public ICollection<PurchaseItem> Items { get; set; }
+
+    public decimal GetTotal() => Items.Sum(x => x.Quantity * x.Price);
 }

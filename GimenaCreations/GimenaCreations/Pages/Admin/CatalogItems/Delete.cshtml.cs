@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GimenaCreations.Data;
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 
 namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class DeleteModel : PageModel
     {
         private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public DeleteModel(GimenaCreations.Data.ApplicationDbContext context)
+        public DeleteModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         [BindProperty]
@@ -52,6 +49,7 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
 
             if (catalogitem != null)
             {
+                System.IO.File.Delete($"{_environment.WebRootPath}\\{CatalogItem.PictureFileName}");
                 CatalogItem = catalogitem;
                 _context.CatalogItems.Remove(CatalogItem);
                 await _context.SaveChangesAsync();

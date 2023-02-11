@@ -1,12 +1,10 @@
-using GimenaCreations.Data;
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 using GimenaCreations.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO.Compression;
-using System;
 
 namespace GimenaCreations.Pages;
 

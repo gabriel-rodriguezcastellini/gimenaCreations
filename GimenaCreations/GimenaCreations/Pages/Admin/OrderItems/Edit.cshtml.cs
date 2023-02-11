@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GimenaCreations.Data;
-using GimenaCreations.Models;
 using MassTransit;
-using System.IO.Compression;
-using System.Net.Mime;
-using System.Net;
 using GimenaCreations.Contracts;
+using GimenaCreations.Entities;
 
 namespace GimenaCreations.Pages.Admin.OrderItems
 {
@@ -81,7 +72,7 @@ namespace GimenaCreations.Pages.Admin.OrderItems
                         _context.RemoveRange(await _context.Files.Where(x => x.OrderItemId == OrderItem.Id).ToListAsync());
                         await _context.SaveChangesAsync();
 
-                        await _context.Files.AddAsync(new Models.File()
+                        await _context.Files.AddAsync(new Entities.File()
                         {
                             Content = memoryStream.ToArray(),
                             OrderItemId = OrderItem.Id,

@@ -1,4 +1,4 @@
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 using GimenaCreations.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

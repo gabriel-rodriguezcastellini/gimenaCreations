@@ -1,4 +1,5 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
+using GimenaCreations.Models;
 
 namespace GimenaCreations.Services;
 

@@ -1,4 +1,4 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
 
 namespace GimenaCreations.Contracts;
 

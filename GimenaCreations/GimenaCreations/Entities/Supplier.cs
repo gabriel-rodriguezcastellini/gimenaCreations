@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GimenaCreations.Models;
+namespace GimenaCreations.Entities;
 
 public class Supplier
 {

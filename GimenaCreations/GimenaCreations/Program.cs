@@ -1,19 +1,24 @@
 using GimenaCreations;
 using GimenaCreations.Consumers;
 using GimenaCreations.Data;
+using GimenaCreations.Entities;
 using GimenaCreations.Helpers;
-using GimenaCreations.Models;
 using GimenaCreations.Services;
+using HealthChecks.UI.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Serilog;
 using StackExchange.Redis;
 using System.Reflection;
 using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -74,32 +79,29 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-var services = builder.Services;
-var configuration = builder.Configuration;
-
-services.AddAuthentication().AddGoogle(googleOptions =>
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
 
 //Configure other services up here
 var multiplexer = ConnectionMultiplexer.Connect("localhost");
-services.AddSingleton<IConnectionMultiplexer>(multiplexer);
-services.AddTransient<ICartService, CartService>();
-services.AddTransient<ICatalogService, CatalogService>();
-services.AddTransient<IOrderService, OrderService>();
-services.AddTransient<IFileService, FileService>();
-services.AddTransient<IFileHelper, FileHelper>();
-services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
+builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<ICatalogService, CatalogService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IFileService, FileService>();
+builder.Services.AddTransient<IFileHelper, FileHelper>();
+builder.Services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
 
-services.AddHttpClient<WebhookNotificationConsumer>(client =>
+builder.Services.AddHttpClient<WebhookNotificationConsumer>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MercadoPago:BaseUrl"));
     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", builder.Configuration.GetValue<string>("MercadoPago:AccessToken"));
 });
 
-services.AddMassTransit(x =>
+builder.Services.AddMassTransit(x =>
 {
     x.SetKebabCaseEndpointNameFormatter();
 
@@ -120,13 +122,37 @@ services.AddMassTransit(x =>
     });
 });
 
+
+builder.Services.AddHealthChecks()
+    .AddCheck("Self", () => HealthCheckResult.Healthy("This web is healthy"), new string[] { "self" })
+    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), healthQuery: "SELECT 1", name: "sql", failureStatus: HealthStatus.Degraded,
+        tags: new string[] { "db", "sql", "sqlserver" })
+    .AddDbContextCheck<ApplicationDbContext>();
+
+builder.Services.AddHealthChecksUI(setupSettings =>
+{
+    setupSettings.SetHeaderText("Health Checks Status");
+    setupSettings.AddHealthCheckEndpoint("Web", "/healthz");
+}).AddInMemoryStorage();
+
+builder.Services.AddApplicationInsightsTelemetry(new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions
+{
+    // Disables adaptive sampling.
+    EnableAdaptiveSampling = false,
+
+    // Disables QuickPulse (Live Metrics stream).
+    EnableQuickPulseMetricStream = false
+});
+
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 await db.Database.MigrateAsync();
 
 await new ApplicationDbContextSeed()
-    .SeedAsync(db, app.Environment, scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContextSeed>>(), scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+    .SeedAsync(db, app.Environment, scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContextSeed>>(), scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(),
+    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -170,6 +196,20 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(configure =>
+{
+    configure.MapDefaultControllerRoute();
+    configure.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+    configure.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
+
+    configure.MapHealthChecksUI(setupOptions =>
+    {
+        setupOptions.UIPath = "/hc-ui";
+        setupOptions.AddCustomStylesheet("wwwroot/css/site.css");
+    }).RequireAuthorization(GimenaCreations.Models.Role.Admin);
+});
+
 app.MapRazorPages();
 app.MapControllers();
 

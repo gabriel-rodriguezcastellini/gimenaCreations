@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GimenaCreations.Entities;
 
 namespace GimenaCreations.Models;
 

@@ -1,4 +1,4 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace GimenaCreations.ViewModels;

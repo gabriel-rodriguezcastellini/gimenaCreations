@@ -2,5 +2,5 @@
 
 public interface IFileService
 {
-    Task<ICollection<Models.File>> GetFilesToDownloadAsync(int orderId, string userId);
+    Task<ICollection<Entities.File>> GetFilesToDownloadAsync(int orderId, string userId);
 }

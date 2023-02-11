@@ -1,4 +1,4 @@
-﻿using GimenaCreations.Models;
+﻿using GimenaCreations.Entities;
 using GimenaCreations.Services;
 using GimenaCreations.ViewModels.CartViewModels;
 using Microsoft.AspNetCore.Identity;

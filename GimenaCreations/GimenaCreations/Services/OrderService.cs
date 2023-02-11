@@ -1,5 +1,5 @@
 ﻿using GimenaCreations.Data;
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GimenaCreations.Services;

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using GimenaCreations.Entities;
 using GimenaCreations.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -213,6 +214,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                 user.Address.ZipCode = Input.ZipCode;
                 user.Address.Street = Input.Street;
                 user.Active = true;
+                user.DateTimeAdd = DateTime.UtcNow;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user);

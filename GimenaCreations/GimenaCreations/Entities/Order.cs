@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GimenaCreations.Models;
+namespace GimenaCreations.Entities;
 
-public class Order
+public class Order : IAuditable
 {
     public int Id { get; set; }
     public Address Address { get; set; }
@@ -13,7 +13,7 @@ public class Order
     public PaymentMethod PaymentMethod { get; set; }
 
     public DateTime Date { get; set; }
-    
+
     public string Description { get; set; }
 
     [Display(Name = "User")]

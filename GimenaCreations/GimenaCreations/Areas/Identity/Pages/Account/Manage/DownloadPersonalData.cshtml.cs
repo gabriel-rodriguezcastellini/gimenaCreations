@@ -3,7 +3,7 @@
 #nullable disable
 
 using System.Text.Json;
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

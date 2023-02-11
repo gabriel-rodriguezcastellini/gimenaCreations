@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using GimenaCreations.Models;
 using GimenaCreations.Services;
+using GimenaCreations.Entities;
 
 namespace GimenaCreations.Pages
 {

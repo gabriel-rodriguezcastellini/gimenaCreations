@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GimenaCreations.Models;
+namespace GimenaCreations.Entities;
 
 public class OrderItem
 {
@@ -32,4 +32,7 @@ public class OrderItem
 
     [NotMapped, Display(Name = "File")]
     public IFormFile FormFile { get; set; }
+
+    [NotMapped]
+    public decimal Total => UnitPrice * Units;
 }

@@ -1,5 +1,5 @@
 ﻿using GimenaCreations.Data;
-using GimenaCreations.Models;
+using GimenaCreations.Entities;
 using GimenaCreations.Pagination;
 using Microsoft.EntityFrameworkCore;
 

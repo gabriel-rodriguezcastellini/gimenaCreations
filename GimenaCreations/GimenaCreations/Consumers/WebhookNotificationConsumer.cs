@@ -1,6 +1,6 @@
 ﻿using GimenaCreations.Contracts;
+using GimenaCreations.Entities;
 using GimenaCreations.Extensions;
-using GimenaCreations.Models;
 using GimenaCreations.Models.MercadoPago;
 using GimenaCreations.Services;
 using MassTransit;

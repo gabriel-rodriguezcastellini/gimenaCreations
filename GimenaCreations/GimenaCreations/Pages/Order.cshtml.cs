@@ -1,4 +1,5 @@
 using GimenaCreations.Contracts;
+using GimenaCreations.Entities;
 using GimenaCreations.Models;
 using GimenaCreations.Services;
 using MassTransit;

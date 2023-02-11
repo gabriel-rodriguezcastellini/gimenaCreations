@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GimenaCreations.Models;
+namespace GimenaCreations.Entities;
 
 public class File
 {
