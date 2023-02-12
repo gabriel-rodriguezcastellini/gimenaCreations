@@ -38,23 +38,26 @@ public class OrderModel : PageModel
     }
 
     [BindProperty]
-    public BasketCheckout Checkout { get; set; }
+    public CustomerBasket Checkout { get; set; }
 
     public async Task OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(HttpContext.User);
+        Checkout = await _cartService.GetBasketAsync(user.Id);
 
-        Checkout = new BasketCheckout
+        Checkout.User = new()
         {
-            Basket = await _cartService.GetBasketAsync(user.Id),
-            State = user.Address.State,
-            City = user.Address.City,
-            Country = user.Address.Country,
+            Address = new()
+            {
+                State = user.Address.State,
+                City = user.Address.City,
+                Country = user.Address.Country,
+                Street = user.Address.Street,
+                ZipCode = user.Address.ZipCode,
+            },
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Street = user.Address.Street,
-            ZipCode = user.Address.ZipCode,
-        };
+        };        
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace GimenaCreations.Models;
+﻿namespace GimenaCreations.Constants;
 
 public static class Role
 {

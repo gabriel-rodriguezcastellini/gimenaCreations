@@ -28,21 +28,21 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddRazorPages(configure =>
 {
-    configure.Conventions.AuthorizeFolder("/Admin", GimenaCreations.Models.Role.Admin);
-    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Models.Role.Manager);
-    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Models.Role.Manager);
+    configure.Conventions.AuthorizeFolder("/Admin", GimenaCreations.Constants.Role.Admin);
+    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Constants.Role.Manager);
+    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Constants.Role.Manager);
 });
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(GimenaCreations.Models.Role.Admin, policy =>
+    options.AddPolicy(GimenaCreations.Constants.Role.Admin, policy =>
     {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Admin, GimenaCreations.Models.Role.Manager });
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Constants.Role.Admin, GimenaCreations.Constants.Role.Manager });
     });
 
-    options.AddPolicy(GimenaCreations.Models.Role.Manager, policy =>
+    options.AddPolicy(GimenaCreations.Constants.Role.Manager, policy =>
     {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Models.Role.Manager });
+        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Constants.Role.Manager });
     });
 });
 
@@ -207,7 +207,7 @@ app.UseEndpoints(configure =>
     {
         setupOptions.UIPath = "/hc-ui";
         setupOptions.AddCustomStylesheet("wwwroot/css/site.css");
-    }).RequireAuthorization(GimenaCreations.Models.Role.Admin);
+    }).RequireAuthorization(GimenaCreations.Constants.Role.Admin);
 });
 
 app.MapRazorPages();

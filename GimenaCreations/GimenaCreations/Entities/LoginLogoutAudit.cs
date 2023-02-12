@@ -7,7 +7,7 @@ public class LoginLogoutAudit
     public int Id { get; set; }
 
     [Display(Name = "User ID")]
-    public string UserId { get; set; }
+    public string ApplicationUserId { get; set; }
 
     [Display(Name = "Login time")]
     public DateTime? LoginTime { get; set; }
@@ -19,4 +19,6 @@ public class LoginLogoutAudit
 
     [Display(Name = "Full name")]
     public string FullName { get; set; }
+
+    public ApplicationUser ApplicationUser { get; set; }
 }

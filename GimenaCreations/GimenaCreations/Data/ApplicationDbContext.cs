@@ -1,5 +1,6 @@
 ﻿using GimenaCreations.Entities;
 using GimenaCreations.EntityConfigurations;
+using GimenaCreations.MarkerInterfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -77,7 +78,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 ActionType = entry.State == EntityState.Added ? "INSERT" : GetActionType(entry),
                 EntityId = entry.Properties.Single(p => p.Metadata.IsPrimaryKey()).CurrentValue.ToString(),
                 EntityName = entry.Metadata.ClrType.Name,
-                UserId = _contextAccessor.HttpContext?.User?.Claims?.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "Unauthenticated user",
+                ApplicationUserId = _contextAccessor.HttpContext?.User?.Claims?.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "Unauthenticated user",
                 TimeStamp = DateTime.UtcNow,
                 Changes = entry.Properties.Select(p => new { p.Metadata.Name, p.CurrentValue }).ToDictionary(i => i.Name, i => i.CurrentValue),
 

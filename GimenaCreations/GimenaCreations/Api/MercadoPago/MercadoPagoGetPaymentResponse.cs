@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GimenaCreations.Models.MercadoPago;
+namespace GimenaCreations.Api.MercadoPago;
 
-public class GetPaymentResponse
+public class MercadoPagoGetPaymentResponse
 {
     public string Status { get; set; }
 

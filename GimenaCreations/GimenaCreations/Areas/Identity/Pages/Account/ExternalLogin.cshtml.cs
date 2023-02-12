@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using GimenaCreations.Constants;
 using GimenaCreations.Data;
 using GimenaCreations.Entities;
-using GimenaCreations.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -151,7 +151,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
 
                 await _context.LoginLogoutAudits.AddAsync(new LoginLogoutAudit
                 {
-                    UserId = user.Id,
+                    ApplicationUserId = user.Id,
                     LoginTime = DateTime.UtcNow,
                     Username = user.UserName,
                     FullName = user.FirstName + " " + user.LastName

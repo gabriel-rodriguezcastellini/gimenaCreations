@@ -1,6 +1,6 @@
-﻿namespace GimenaCreations.Models.MercadoPago;
+﻿namespace GimenaCreations.Api.MercadoPago;
 
-public static class Status
+public static class MercadoPagoOrderStatus
 {
     public const string Pending = "pending";
     public const string Approved = "approved";
@@ -10,5 +10,5 @@ public static class Status
     public const string Rejected = "rejected";
     public const string Cancelled = "cancelled";
     public const string Refunded = "refunded";
-    public const string ChargedBack = "charged_back";    
+    public const string ChargedBack = "charged_back";
 }

@@ -32,7 +32,7 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
 
             await _context.LoginLogoutAudits.AddAsync(new LoginLogoutAudit
             {
-                UserId = _userManager.GetUserId(HttpContext.User),
+                ApplicationUserId = _userManager.GetUserId(HttpContext.User),
                 LogoutTime = DateTime.UtcNow,
                 Username = user.UserName,
                 FullName = user.FirstName + " " + user.LastName

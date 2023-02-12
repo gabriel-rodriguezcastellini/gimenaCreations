@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GimenaCreations.MarkerInterfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace GimenaCreations.Entities;
 

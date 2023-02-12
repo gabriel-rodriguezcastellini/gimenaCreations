@@ -43,17 +43,17 @@ public class CartService : ICartService
         await UpdateBasketAsync(basket);
     }
 
-    public async Task<Entities.Order> CheckoutAsync(BasketCheckout checkout, string userId)
+    public async Task<Entities.Order> CheckoutAsync(CustomerBasket checkout, string userId)
     {
         var order = new Entities.Order
         {
             Address = new()
             {
-                City = checkout.City,
-                Country = checkout.Country,
-                State = checkout.State,
-                Street = checkout.Street,
-                ZipCode = checkout.ZipCode
+                City = checkout.User.Address.City,
+                Country = checkout.User.Address.Country,
+                State = checkout.User.Address.State,
+                Street = checkout.User.Address.Street,
+                ZipCode = checkout.User.Address.ZipCode
             },
             Items = (await GetBasketAsync(userId)).Items.Select(i => new OrderItem
             {
@@ -118,7 +118,7 @@ public class CartService : ICartService
 
     public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
     {
-        var created = await _redis.GetDatabase().StringSetAsync(basket.BuyerId, JsonSerializer.Serialize(basket));
+        var created = await _redis.GetDatabase().StringSetAsync(basket.User.Id, JsonSerializer.Serialize(basket));
 
         if (!created)
         {
@@ -127,6 +127,6 @@ public class CartService : ICartService
         }
 
         _logger.LogInformation("Basket item persisted succesfully.");
-        return await GetBasketAsync(basket.BuyerId);
+        return await GetBasketAsync(basket.User.Id);
     }
 }

@@ -8,7 +8,7 @@ public class LoginLogoutAuditTypeConfiguration : IEntityTypeConfiguration<LoginL
 {
     public void Configure(EntityTypeBuilder<LoginLogoutAudit> builder)
     {
-        builder.Property(x=>x.UserId).IsRequired();
+        builder.Property(x=>x.ApplicationUserId).IsRequired();
         builder.Property(x => x.Username).IsRequired();
         builder.Property(x => x.FullName).IsRequired();        
     }

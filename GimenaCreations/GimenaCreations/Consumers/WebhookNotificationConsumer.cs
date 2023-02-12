@@ -1,7 +1,7 @@
-﻿using GimenaCreations.Contracts;
+﻿using GimenaCreations.Api.MercadoPago;
+using GimenaCreations.Contracts;
 using GimenaCreations.Entities;
 using GimenaCreations.Extensions;
-using GimenaCreations.Models.MercadoPago;
 using GimenaCreations.Services;
 using MassTransit;
 using MercadoPago.Config;
@@ -33,7 +33,7 @@ public sealed class WebhookNotificationConsumer : IConsumer<WebhookNotification>
         _logger.LogInformation("Received message: {Message}", JsonSerializer.Serialize(context.Message));
         MercadoPagoConfig.AccessToken = _configuration.GetValue<string>("MercadoPago:AccessToken");        
 
-        var response = JsonSerializer.Deserialize<GetPaymentResponse>(await
+        var response = JsonSerializer.Deserialize<MercadoPagoGetPaymentResponse>(await
             (await _httpClient.GetAsync(_configuration.GetValue<string>("MercadoPago:PaymentUrl").Replace("[ID]", context.Message.PaymentId)))
             .Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
@@ -41,13 +41,13 @@ public sealed class WebhookNotificationConsumer : IConsumer<WebhookNotification>
 
         switch (response!.Status)
         {
-            case Status.Approved:
+            case MercadoPagoOrderStatus.Approved:
                 await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.Paid, "The payment was performed.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Paid.GetDisplayName() });
                 break;
-            case Status.Cancelled:
-            case Status.Refunded:
-            case Status.ChargedBack:            
+            case MercadoPagoOrderStatus.Cancelled:
+            case MercadoPagoOrderStatus.Refunded:
+            case MercadoPagoOrderStatus.ChargedBack:            
                 await _orderService.UpdateOrderStatusAsync(Convert.ToInt32(order.Id), OrderStatus.Cancelled, "The order was cancelled.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Cancelled.GetDisplayName() });
                 break;

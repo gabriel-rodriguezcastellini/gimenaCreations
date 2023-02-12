@@ -18,7 +18,9 @@ public class AuditEntry
     public string ActionType { get; set; }
 
     [Display(Name = "User ID")]
-    public string UserId { get; set; }
+    public string ApplicationUserId { get; set; }
+
+    public ApplicationUser User { get; set; }
 
     [Display(Name = "Date")]
     public DateTime TimeStamp { get; set; }

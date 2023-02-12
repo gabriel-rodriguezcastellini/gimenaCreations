@@ -22,5 +22,5 @@ public class ApplicationUser : IdentityUser
     public DateTime DateTimeAdd { get; set; }
 
     [NotMapped]
-    public IList<string> Roles { get; set; } = new List<string>();
+    public IList<string> Roles { get; set; } = new List<string>();    
 }

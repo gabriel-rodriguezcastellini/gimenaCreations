@@ -1,6 +1,6 @@
+using GimenaCreations.Constants;
 using GimenaCreations.Data;
 using GimenaCreations.Entities;
-using GimenaCreations.Models;
 using GimenaCreations.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

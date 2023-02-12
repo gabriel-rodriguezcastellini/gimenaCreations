@@ -25,9 +25,9 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <!--firstName-->
                         <div class="form-outline">
-                            <input asp-for="Checkout.FirstName" class="form-control" />
-                            <label asp-for="Checkout.FirstName" class="form-label"></label>
-                            <span asp-validation-for="Checkout.FirstName" class="text-danger"></span>
+                            <input asp-for="Checkout.User.FirstName" class="form-control" />
+                            <label asp-for="Checkout.User.FirstName" class="form-label"></label>
+                            <span asp-validation-for="Checkout.User.FirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <!--Grid column-->
@@ -35,9 +35,9 @@
                     <div class="col-md-6 mb-2">
                         <!--lastName-->
                         <div class="form-outline">
-                            <input asp-for="Checkout.LastName" class="form-control" />
-                            <label asp-for="Checkout.LastName" class="form-label"></label>
-                            <span asp-validation-for="Checkout.LastName" class="text-danger"></span>
+                            <input asp-for="Checkout.User.LastName" class="form-control" />
+                            <label asp-for="Checkout.User.LastName" class="form-label"></label>
+                            <span asp-validation-for="Checkout.User.LastName" class="text-danger"></span>
                         </div>
                     </div>
                     <!--Grid column-->
@@ -48,8 +48,8 @@
                     Address
                 </p>
                 <div class="form-outline mb-4">
-                    <input asp-for="Checkout.Street" class="form-control" />
-                    <span asp-validation-for="Checkout.Street" class="text-danger"></span>
+                    <input asp-for="Checkout.User.Address.Street" class="form-control" />
+                    <span asp-validation-for="Checkout.User.Address.Street" class="text-danger"></span>
                 </div>
 
                 <!--city-->
@@ -57,8 +57,8 @@
                     City
                 </p>
                 <div class="form-outline mb-4">
-                    <input asp-for="Checkout.City" class="form-control" />
-                    <span asp-validation-for="Checkout.City" class="text-danger"></span>
+                    <input asp-for="Checkout.User.Address.City" class="form-control" />
+                    <span asp-validation-for="Checkout.User.Address.City" class="text-danger"></span>
                 </div>
 
                 <!--Grid row-->
@@ -69,8 +69,8 @@
                             Country
                         </p>
                         <div class="form-outline mb-4">
-                            <input class="form-control" asp-for="Checkout.Country" />
-                            <span asp-validation-for="Checkout.Country" class="text-danger"></span>
+                            <input class="form-control" asp-for="Checkout.User.Address.Country" />
+                            <span asp-validation-for="Checkout.User.Address.Country" class="text-danger"></span>
                         </div>
                     </div>
                     <!--Grid column-->
@@ -80,8 +80,8 @@
                             State
                         </p>
                         <div class="form-outline mb-4">
-                            <input class="form-control" asp-for="Checkout.State" />
-                            <span asp-validation-for="Checkout.State" class="text-danger"></span>
+                            <input class="form-control" asp-for="Checkout.User.Address.State" />
+                            <span asp-validation-for="Checkout.User.Address.State" class="text-danger"></span>
                         </div>
                     </div>
                     <!--Grid column-->
@@ -91,8 +91,8 @@
                             Zip
                         </p>
                         <div class="form-outline">
-                            <input class="form-control" asp-for="Checkout.ZipCode" />
-                            <span asp-validation-for="Checkout.ZipCode" class="text-danger"></span>
+                            <input class="form-control" asp-for="Checkout.User.Address.ZipCode" />
+                            <span asp-validation-for="Checkout.User.Address.ZipCode" class="text-danger"></span>
                         </div>
                     </div>
                     <!--Grid column-->
@@ -129,7 +129,7 @@
                     <tbody>
                         @{
                             var index2 = 0;
-                            foreach (var item in Model.Checkout.Basket.Items)
+                            foreach (var item in Model.Checkout.Items)
                             {
                                 <tr>
                                     <th>
@@ -170,7 +170,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th class="text-center">$ @Model.Checkout.Basket.Total()</th>
+                            <th class="text-center">$ @Model.Checkout.Total()</th>
                         </tr>
                     </tfoot>
                 </table>
