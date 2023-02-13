@@ -19,13 +19,13 @@ namespace GimenaCreations.Pages.Admin.AuditEntries
             _context = context;
         }
 
-        public IList<AuditEntry> AuditEntry { get;set; } = default!;
+        public IList<AuditEntry> AuditEntry { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
             if (_context.AuditEntries != null)
             {
-                AuditEntry = await _context.AuditEntries.ToListAsync();
+                AuditEntry = await _context.AuditEntries.OrderByDescending(x => x.Id).ToListAsync();
             }
         }
     }

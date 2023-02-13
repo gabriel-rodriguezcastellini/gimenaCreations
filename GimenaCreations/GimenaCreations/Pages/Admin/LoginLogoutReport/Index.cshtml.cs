@@ -19,13 +19,13 @@ namespace GimenaCreations.Pages.Admin.LoginLogoutReport
             _context = context;
         }
 
-        public IList<LoginLogoutAudit> LoginLogoutAudit { get;set; } = default!;
+        public IList<LoginLogoutAudit> LoginLogoutAudit { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
             if (_context.LoginLogoutAudits != null)
             {
-                LoginLogoutAudit = await _context.LoginLogoutAudits.ToListAsync();
+                LoginLogoutAudit = await _context.LoginLogoutAudits.OrderByDescending(x => x.Id).ToListAsync();
             }
         }
     }
