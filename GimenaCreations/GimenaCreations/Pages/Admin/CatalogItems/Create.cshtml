@@ -53,10 +53,15 @@
                 <label asp-for="CatalogItem.MaxStockThreshold" class="control-label"></label>
                 <input asp-for="CatalogItem.MaxStockThreshold" class="form-control" />
                 <span asp-validation-for="CatalogItem.MaxStockThreshold" class="text-danger"></span>
-            </div>
+            </div>            
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="CatalogItem.OnReorder" /> @Html.DisplayNameFor(model => model.CatalogItem.OnReorder)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="CatalogItem.RequiresFile" /> @Html.DisplayNameFor(model => model.CatalogItem.RequiresFile)
                 </label>
             </div>
             <div class="form-group">

@@ -176,11 +176,11 @@
             foreach (var item in Model.Sales)
             {
                 @:Total.push(@item.Total);
-                @:Products.push('@item.ProductName');
+                @:Products.push('@Html.Raw(item.ProductName)');
             }
         }
 
-                                    var Sales = {
+        var Sales = {
             data: Total,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',

@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="CatalogItem.PictureFileName" class="control-label"></label>
-                <img src="~/@Model.CatalogItem.PictureFileName" />                
+                <img src="~/@Model.CatalogItem.PictureFileName" class="w-25" />                
             </div>
             <div class="form-group">
                 <label asp-for="CatalogItem.FormFile" class="control-label"></label>
@@ -64,6 +64,11 @@
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="CatalogItem.OnReorder" /> @Html.DisplayNameFor(model => model.CatalogItem.OnReorder)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="CatalogItem.RequiresFile" /> @Html.DisplayNameFor(model => model.CatalogItem.RequiresFile)
                 </label>
             </div>
             <div class="form-group">

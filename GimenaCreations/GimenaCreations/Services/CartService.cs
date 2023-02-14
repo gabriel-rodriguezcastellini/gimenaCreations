@@ -33,6 +33,7 @@ public class CartService : ICartService
                 PictureUrl = item.PictureFileName,
                 ProductName = item.Name,
                 Quantity = 1,
+                RequiresFile = item.RequiresFile
             });
         }
         else
@@ -61,7 +62,8 @@ public class CartService : ICartService
                 PictureUrl = i.PictureUrl,
                 ProductName = i.ProductName,
                 UnitPrice = i.UnitPrice,
-                Units = i.Quantity
+                Units = i.Quantity,
+                RequiresFile = i.RequiresFile
             }).ToList(),
             Date = DateTime.UtcNow,
             PaymentMethod = (PaymentMethod)checkout.PaymentMethod!,

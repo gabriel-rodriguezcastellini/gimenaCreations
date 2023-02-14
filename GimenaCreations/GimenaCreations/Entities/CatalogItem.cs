@@ -31,6 +31,9 @@ namespace GimenaCreations.Entities
         [Display(Name = "On reorder")]
         public bool OnReorder { get; set; }
 
+        [Display(Name = "Requires files")]
+        public bool RequiresFile { get; set; }
+
         public ICollection<OrderItem> Items { get; set; }
         public ICollection<PurchaseItem> PurchaseItems { get; set; }
 

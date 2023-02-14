@@ -180,6 +180,9 @@ namespace GimenaCreations.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("RequiresFile")
+                        .HasColumnType("bit");
+
                     b.Property<int>("RestockThreshold")
                         .HasColumnType("int");
 
