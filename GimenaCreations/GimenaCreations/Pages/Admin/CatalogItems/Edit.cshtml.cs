@@ -53,7 +53,11 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
             {
                 if (CatalogItem.FormFile != null && CatalogItem.FormFile.Length > 0)
                 {
-                    System.IO.File.Delete($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.PictureFileName}");
+                    if (!string.IsNullOrWhiteSpace(CatalogItem.PictureFileName))
+                    {
+                        System.IO.File.Delete($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.PictureFileName}");
+                    }
+                    
                     await _fileHelper.CreateFileAsync($"{_webHostEnvironment.WebRootPath}\\{CatalogItem.FormFile.FileName}", CatalogItem.FormFile);                    
                     CatalogItem.PictureFileName = CatalogItem.FormFile.FileName;
                 }

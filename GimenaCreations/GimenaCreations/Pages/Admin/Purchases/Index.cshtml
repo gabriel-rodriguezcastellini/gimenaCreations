@@ -40,7 +40,7 @@
 @foreach (var item in Model.Purchase) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Supplier.AfipResponsibility)
+                @Html.DisplayFor(modelItem => item.Supplier.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.InvoiceNumber)
