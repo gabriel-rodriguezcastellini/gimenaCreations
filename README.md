@@ -29,4 +29,4 @@ The architecture proposes an all-in-one oriented architecture implementation usi
 
 ## Read further
 
-- [Explore the application](https://github.com/gabriel-rodriguezcastellini/UrlShortener/wiki#explore-the-application)
+- [Explore the application](https://github.com/gabriel-rodriguezcastellini/gimenaCreations/wiki)
