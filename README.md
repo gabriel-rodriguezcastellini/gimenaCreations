@@ -8,7 +8,7 @@ E-commerce .NET Core application.
 
 ## Getting Started
 
-Make sure you have [installed](https://www.memurai.com/) memurai, [ngrok](https://ngrok.com/) and [seq](https://datalust.co/) in your environment. After that, you can run the below command from the **/ngrok/** executable and replace the first part of the NotificationUrl value of the appsettings.json with the one that is returned by ngrok.
+Make sure you have installed [memurai](https://www.memurai.com/), [ngrok](https://ngrok.com/) and [seq](https://datalust.co/) in your environment. After that, you can run the below command from the **/ngrok/** executable and replace the first part of the NotificationUrl value of the appsettings.json with the one that is returned by ngrok.
 
 ```powershell
 ngrok http https://localhost:7217
