@@ -45,6 +45,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new ApplicationUserEntityTypeConfiguration());
+        builder.ApplyConfiguration(new AuditEntryEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogItemEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogTypeEntityTypeConfiguration());
         builder.ApplyConfiguration(new FileEntityTypeConfiguration());
@@ -78,7 +79,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 ActionType = entry.State == EntityState.Added ? "INSERT" : GetActionType(entry),
                 EntityId = entry.Properties.Single(p => p.Metadata.IsPrimaryKey()).CurrentValue.ToString(),
                 EntityName = entry.Metadata.ClrType.Name,
-                ApplicationUserId = _contextAccessor.HttpContext?.User?.Claims?.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "Unauthenticated user",
+                ApplicationUserId = _contextAccessor.HttpContext?.User?.Claims?.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? null,
                 TimeStamp = DateTime.UtcNow,
                 Changes = entry.Properties.Select(p => new { p.Metadata.Name, p.CurrentValue }).ToDictionary(i => i.Name, i => i.CurrentValue),
 
