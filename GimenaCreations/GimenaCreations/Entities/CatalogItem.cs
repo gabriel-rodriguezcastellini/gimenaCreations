@@ -34,6 +34,9 @@ namespace GimenaCreations.Entities
         [Display(Name = "Requires files")]
         public bool RequiresFile { get; set; }
 
+        [Display(Name = "Visible")]
+        public bool IsVisible { get; set; }
+
         public ICollection<OrderItem> Items { get; set; }
         public ICollection<PurchaseItem> PurchaseItems { get; set; }
 

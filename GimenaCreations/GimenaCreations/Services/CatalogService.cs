@@ -23,7 +23,7 @@ namespace GimenaCreations.Services
                 return null;
             }
 
-            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            var catalogitem = await _context.CatalogItems.Where(x => x.IsVisible).Include(x => x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
 
             if (catalogitem == null)
             {
@@ -39,7 +39,7 @@ namespace GimenaCreations.Services
 
             if (_context.CatalogItems != null)
             {
-                IQueryable<CatalogItem> catalogItems = _context.CatalogItems.AsQueryable();
+                IQueryable<CatalogItem> catalogItems = _context.CatalogItems.Where(x => x.IsVisible).AsQueryable();
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -62,7 +62,7 @@ namespace GimenaCreations.Services
 
         public async Task UpdateCatalogItemStockAsync(int catalogItemId, int substractedQuantity)
         {
-            var catalogItem = await _context.CatalogItems.FirstAsync(x=> x.Id == catalogItemId);
+            var catalogItem = await _context.CatalogItems.FirstAsync(x => x.Id == catalogItemId);
             catalogItem.AvailableStock += substractedQuantity;
             _context.Update(catalogItem);
             await _context.SaveChangesAsync();
