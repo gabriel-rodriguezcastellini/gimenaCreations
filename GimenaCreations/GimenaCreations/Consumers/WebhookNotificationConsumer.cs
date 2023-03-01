@@ -42,13 +42,13 @@ public sealed class WebhookNotificationConsumer : IConsumer<WebhookNotification>
         switch (response!.Status)
         {
             case MercadoPagoOrderStatus.Approved:
-                await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.Paid, "The payment was performed.");
+                await _orderService.UpdateOrderStatusAsync(order, OrderStatus.Paid, "The payment was performed.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Paid.GetDisplayName() });
                 break;
             case MercadoPagoOrderStatus.Cancelled:
             case MercadoPagoOrderStatus.Refunded:
             case MercadoPagoOrderStatus.ChargedBack:            
-                await _orderService.UpdateOrderStatusAsync(Convert.ToInt32(order.Id), OrderStatus.Cancelled, "The order was cancelled.");
+                await _orderService.UpdateOrderStatusAsync(order, OrderStatus.Cancelled, "The order was cancelled.");
                 await hubContext.Clients.User(order.ApplicationUserId).SendAsync("UpdatedOrderState", new { order.Id, status = OrderStatus.Cancelled.GetDisplayName() });
                 break;
             default:
