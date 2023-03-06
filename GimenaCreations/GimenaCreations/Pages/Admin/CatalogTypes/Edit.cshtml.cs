@@ -2,16 +2,20 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Entities;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.CatalogTypes
 {
     public class EditModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context)
+        public EditModel(Data.ApplicationDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -19,6 +23,11 @@ namespace GimenaCreations.Pages.Admin.CatalogTypes
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogTypes.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.CatalogTypes == null)
             {
                 return NotFound();
@@ -37,6 +46,11 @@ namespace GimenaCreations.Pages.Admin.CatalogTypes
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogTypes.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();

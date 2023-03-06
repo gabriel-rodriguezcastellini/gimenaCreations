@@ -18,7 +18,7 @@ public class OrderService : IOrderService
 
     public async Task<List<Order>> GetAllOrdersAsync(string userId) => await _context.Orders
         .Include(x => x.Items)
-        .ThenInclude(x =>x.Files)
+        .ThenInclude(x => x.Files)
         .OrderByDescending(x => x.Date)
         .Where(x => x.ApplicationUserId == userId)
         .Include(x => x.Items)
@@ -26,7 +26,7 @@ public class OrderService : IOrderService
         .ToListAsync();
 
     public async Task<Order> GetOrderByIdAsync(int id, string userId) =>
-        await _context.Orders.Include(x => x.Address).Include(x => x.Items).FirstAsync(x => x.Id == id && x.ApplicationUserId == userId);
+        await _context.Orders.Include(x => x.Address).Include(x => x.Items).Include(x => x.ApplicationUser).FirstAsync(x => x.Id == id && x.ApplicationUserId == userId);
 
     public async Task<Order> GetOrderByIdAsync(int id) =>
         await _context.Orders.Include(x => x.Address).Include(x => x.Items).FirstAsync(x => x.Id == id);

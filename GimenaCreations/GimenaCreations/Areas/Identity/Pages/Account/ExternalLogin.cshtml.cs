@@ -241,17 +241,6 @@ namespace GimenaCreations.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-
-                        if (user.Email == _config.GetValue<string>("AdminEmail"))
-                        {
-                            await _userManager.AddToRoleAsync(user, Role.Admin);
-                        }
-
-                        if (user.Email == _config.GetValue<string>("ManagerEmail"))
-                        {
-                            await _userManager.AddToRoleAsync(user, Role.Manager);
-                        }
-
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

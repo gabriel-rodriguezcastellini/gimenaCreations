@@ -3,16 +3,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Entities;
+using GimenaCreations.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.Orders
 {
     public class EditModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context)
+        public EditModel(Data.ApplicationDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -20,6 +25,11 @@ namespace GimenaCreations.Pages.Admin.Orders
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Orders.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.Orders == null)
             {
                 return NotFound();
@@ -32,8 +42,8 @@ namespace GimenaCreations.Pages.Admin.Orders
             }
             Order = order;
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["Status"] = new SelectList(Enum.GetValues<OrderStatus>().Select(x => new { ID = (int)x, Name = x.ToString() }), "ID", "Name", (int)order.Status);
-            ViewData["PaymentMethod"] = new SelectList(Enum.GetValues<PaymentMethod>().Select(x => new { ID = (int)x, Name = x.ToString() }), "ID", "Name", (int)order.PaymentMethod);
+            ViewData["Status"] = new SelectList(Enum.GetValues<OrderStatus>().Select(x => new { ID = (int)x, Name = x.GetDisplayName() }), "ID", "Name", (int)order.Status);
+            ViewData["PaymentMethod"] = new SelectList(Enum.GetValues<PaymentMethod>().Select(x => new { ID = (int)x, Name = x.GetDisplayName() }), "ID", "Name", (int)order.PaymentMethod);
             return Page();
         }
 
@@ -41,6 +51,11 @@ namespace GimenaCreations.Pages.Admin.Orders
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Orders.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();

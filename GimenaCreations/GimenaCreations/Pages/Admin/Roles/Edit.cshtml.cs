@@ -1,5 +1,7 @@
+using GimenaCreations.Constants;
 using GimenaCreations.Entities;
 using GimenaCreations.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,11 +12,13 @@ public class EditModel : PageModel
 {
     private readonly RoleManager<IdentityRole> roleManager;
     private readonly UserManager<ApplicationUser> userManager;
+    private readonly IAuthorizationService authorizationService;
 
-    public EditModel(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+    public EditModel(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService)
     {
         this.roleManager = roleManager;
         this.userManager = userManager;
+        this.authorizationService = authorizationService;
     }
 
     [BindProperty]
@@ -22,6 +26,11 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string id)
     {
+        if (!(await authorizationService.AuthorizeAsync(User, Permissions.Roles.Edit)).Succeeded)
+        {
+            return new ForbidResult();
+        }
+
         IdentityRole role = await roleManager.FindByIdAsync(id);
         List<ApplicationUser> members = new();
         List<ApplicationUser> nonMembers = new();
@@ -43,6 +52,11 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(RoleModification model)
     {
+        if (!(await authorizationService.AuthorizeAsync(User, Permissions.Roles.Edit)).Succeeded)
+        {
+            return new ForbidResult();
+        }
+
         IdentityResult result;
 
         if (ModelState.IsValid)

@@ -1,30 +1,98 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GimenaCreations.MarkerInterfaces;
+using Microsoft.EntityFrameworkCore.Update;
+using System.ComponentModel.DataAnnotations;
 
 namespace GimenaCreations.Entities;
 
-public class Purchase
+public class Purchase : IAuditable, IUpdateable
 {
     public int Id { get; set; }
 
-    [Display(Name = "Supplier"), Required]
-    public int SupplierId { get; set; }
-
     public Supplier Supplier { get; set; }
 
-    [Display(Name = "Invoice number"), Required]
-    public string InvoiceNumber { get; set; }
+    [Display(Name = "Supplier")]
+    public int SupplierId { get; set; }
 
-    [Display(Name = "Invoice date")]
-    public DateTime InvoiceDate { get; set; }
+    [Display(Name = "Purchase order date")]
+    public DateTime PurchaseDate { get; set; }
 
-    [Display(Name = "Invoice expiration date")]
-    public DateTime InvoiceExpirationDate { get; set; }
+    public Importance Importance { get; set; }
 
-    [Display(Name = "Is paid")]
-    public bool IsPaid { get; set; }
+    [Display(Name = "Requested by")]
+    public ApplicationUser ApplicationUser { get; set; }
 
-    public string Reference { get; set; }
-    public ICollection<PurchaseItem> Items { get; set; }
+    [Display(Name = "Requested by")]
+    public string ApplicationUserId { get; set; }
+
+    [Display(Name = "Payment method")]
+    public PaymentMethod PaymentMethod { get; set; }
+
+    [Display(Name = "Payment deadline")]
+    public DateTime PaymentDeadline { get; set; }
+
+    public DateTime Deadline { get; set; }
+
+    [Display(Name = "Recipient name")]
+    [Required]
+    public string RecipientName { get; set; }
+
+    [Display(Name = "Shipping company")]
+    public string ShippingCompany { get; set; }
+
+    [Display(Name = "Shipping address")]
+    [Required]
+    public string ShippingAddress { get; set; }
+
+    [Display(Name = "Shipping city")]
+    [Required]
+    public string ShippingCity { get; set; }
+
+    [Display(Name = "Phone")]
+    [Phone]
+    public string Phone { get; set; }
+
+    public decimal? Tax { get; set; }
+
+    public decimal? Discount { get; set; }
+
+    public string Comments { get; set; }
+
+    [Display(Name = "Status")]
+    public PurchaseStatus PurchaseStatus { get; set; }
+
+    public List<PurchaseItem> Items { get; set; }
+
+    public DateTime ModificationDate { get; set; }
 
     public decimal GetTotal() => Items.Sum(x => x.Quantity * x.Price);
+}
+
+public enum Importance
+{
+    [Display(Name = "Low")]
+    Low,
+
+    [Display(Name = "Normal")]
+    Normal,
+
+    [Display(Name = "Medium")]
+    Medium,
+
+    [Display(Name = "High")]
+    High
+}
+
+public enum PurchaseStatus
+{
+    [Display(Name = "Submitted")]
+    Submitted,
+
+    [Display(Name = "Partially delivered")]
+    PartiallyDelivered,
+
+    [Display(Name = "Changing items")]
+    ChangingItems,
+
+    [Display(Name = "Delivered")]
+    Delivered
 }

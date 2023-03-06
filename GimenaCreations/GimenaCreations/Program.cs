@@ -1,11 +1,14 @@
 using GimenaCreations;
+using GimenaCreations.Constants;
 using GimenaCreations.Consumers;
 using GimenaCreations.Data;
 using GimenaCreations.Entities;
 using GimenaCreations.Helpers;
+using GimenaCreations.Permission;
 using GimenaCreations.Services;
 using HealthChecks.UI.Client;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Connections;
@@ -18,9 +21,10 @@ using System.Reflection;
 using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
-
 // Add services to the container.
+builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -28,22 +32,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddRazorPages(configure =>
 {
-    configure.Conventions.AuthorizeFolder("/Admin", GimenaCreations.Constants.Role.Admin);
-    configure.Conventions.AuthorizeFolder("/Admin/Users", GimenaCreations.Constants.Role.Manager);
-    configure.Conventions.AuthorizeFolder("/Admin/Roles", GimenaCreations.Constants.Role.Manager);
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(GimenaCreations.Constants.Role.Admin, policy =>
-    {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Constants.Role.Admin, GimenaCreations.Constants.Role.Manager });
-    });
-
-    options.AddPolicy(GimenaCreations.Constants.Role.Manager, policy =>
-    {
-        policy.RequireAuthenticatedUser().RequireRole(new string[] { GimenaCreations.Constants.Role.Manager });
-    });
+    configure.Conventions.AuthorizeFolder("/Admin");
 });
 
 builder.Services.AddControllers();
@@ -93,6 +82,7 @@ builder.Services.AddTransient<ICatalogService, CatalogService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<IFileHelper, FileHelper>();
+builder.Services.AddTransient<IInvoiceService, InvoiceService>();
 builder.Services.AddSignalR(options => options.EnableDetailedErrors = true).AddMessagePackProtocol();
 
 builder.Services.AddHttpClient<WebhookNotificationConsumer>(client =>
@@ -196,19 +186,15 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapDefaultControllerRoute();
+app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
 
-app.UseEndpoints(configure =>
+app.MapHealthChecksUI(setupOptions =>
 {
-    configure.MapDefaultControllerRoute();
-    configure.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
-    configure.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
-
-    configure.MapHealthChecksUI(setupOptions =>
-    {
-        setupOptions.UIPath = "/hc-ui";
-        setupOptions.AddCustomStylesheet("wwwroot/css/site.css");
-    }).RequireAuthorization(GimenaCreations.Constants.Role.Admin);
-});
+    setupOptions.UIPath = "/hc-ui";
+    setupOptions.AddCustomStylesheet("wwwroot/css/site.css");
+}).RequireAuthorization(Permissions.HealthCheck.View);
 
 app.MapRazorPages();
 app.MapControllers();

@@ -9,5 +9,6 @@ namespace GimenaCreations.Services
         Task<IList<CatalogType>> GetCatalogTypesAsync();
         Task<CatalogItem> GetCatalogItemAsync(int? id);
         Task UpdateCatalogItemStockAsync(int catalogItemId, int substractedQuantity);
+        Task<List<CatalogItem>> GetItemsWithCriticalStockAsync();
     }
 }

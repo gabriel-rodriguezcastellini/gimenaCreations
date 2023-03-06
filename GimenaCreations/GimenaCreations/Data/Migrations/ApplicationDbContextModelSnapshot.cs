@@ -17,7 +17,7 @@ namespace GimenaCreations.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "6.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -348,30 +348,110 @@ namespace GimenaCreations.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("InvoiceDate")
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("InvoiceExpirationDate")
+                    b.Property<decimal?>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Importance")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("InvoiceNumber")
+                    b.Property<DateTime>("PaymentDeadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PurchaseStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecipientName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Reference")
+                    b.Property<string>("ShippingCity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShippingCompany")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("Tax")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("SupplierId");
 
                     b.ToTable("Purchases", (string)null);
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("PurchaseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseId");
+
+                    b.ToTable("PurchaseHistories");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseHistoryItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PurchaseHistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseHistoryId");
+
+                    b.ToTable("PurchaseHistoryItems");
                 });
 
             modelBuilder.Entity("GimenaCreations.Entities.PurchaseItem", b =>
@@ -384,10 +464,6 @@ namespace GimenaCreations.Data.Migrations
 
                     b.Property<int>("CatalogItemId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -407,6 +483,78 @@ namespace GimenaCreations.Data.Migrations
                     b.ToTable("PurchaseItems", (string)null);
                 });
 
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseReception", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("InputDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InputNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvoiceNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("InvoiceReceptionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PurchaseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseId");
+
+                    b.ToTable("PurchaseReceptions");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseReceptionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CatalogItemId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSatisfied")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PurchaseReceptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CatalogItemId");
+
+                    b.HasIndex("PurchaseReceptionId");
+
+                    b.ToTable("PurchaseReceptionItems");
+                });
+
             modelBuilder.Entity("GimenaCreations.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -415,35 +563,62 @@ namespace GimenaCreations.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AfipResponsibility")
+                    b.Property<DateTime>("AddDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CompanyAddress")
+                    b.Property<bool>("Agreement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("BusinessName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Cuit")
+                    b.Property<string>("City")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Phone1")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
+                    b.Property<string>("Phone2")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Website")
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SupplierType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SupplierId")
+                        .IsUnique();
 
                     b.ToTable("Suppliers", (string)null);
                 });
@@ -732,13 +907,41 @@ namespace GimenaCreations.Data.Migrations
 
             modelBuilder.Entity("GimenaCreations.Entities.Purchase", b =>
                 {
+                    b.HasOne("GimenaCreations.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("GimenaCreations.Entities.Supplier", "Supplier")
-                        .WithMany("Purchases")
+                        .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("ApplicationUser");
+
                     b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseHistory", b =>
+                {
+                    b.HasOne("GimenaCreations.Entities.Purchase", "Purchase")
+                        .WithMany()
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Purchase");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseHistoryItem", b =>
+                {
+                    b.HasOne("GimenaCreations.Entities.PurchaseHistory", "PurchaseHistory")
+                        .WithMany("Items")
+                        .HasForeignKey("PurchaseHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PurchaseHistory");
                 });
 
             modelBuilder.Entity("GimenaCreations.Entities.PurchaseItem", b =>
@@ -758,6 +961,36 @@ namespace GimenaCreations.Data.Migrations
                     b.Navigation("CatalogItem");
 
                     b.Navigation("Purchase");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseReception", b =>
+                {
+                    b.HasOne("GimenaCreations.Entities.Purchase", "Purchase")
+                        .WithMany()
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Purchase");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseReceptionItem", b =>
+                {
+                    b.HasOne("GimenaCreations.Entities.CatalogItem", "CatalogItem")
+                        .WithMany()
+                        .HasForeignKey("CatalogItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GimenaCreations.Entities.PurchaseReception", "PurchaseReception")
+                        .WithMany("PurchaseReceptionItems")
+                        .HasForeignKey("PurchaseReceptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CatalogItem");
+
+                    b.Navigation("PurchaseReception");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -838,9 +1071,14 @@ namespace GimenaCreations.Data.Migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("GimenaCreations.Entities.Supplier", b =>
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseHistory", b =>
                 {
-                    b.Navigation("Purchases");
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("GimenaCreations.Entities.PurchaseReception", b =>
+                {
+                    b.Navigation("PurchaseReceptionItems");
                 });
 #pragma warning restore 612, 618
         }

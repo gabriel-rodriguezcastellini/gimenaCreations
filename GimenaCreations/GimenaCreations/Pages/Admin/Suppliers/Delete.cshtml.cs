@@ -2,23 +2,32 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Entities;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.Suppliers
 {
     public class DeleteModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public DeleteModel(GimenaCreations.Data.ApplicationDbContext context)
+        public DeleteModel(Data.ApplicationDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
-      public Supplier Supplier { get; set; }
+        public Supplier Supplier { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Suppliers.Delete)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.Suppliers == null)
             {
                 return NotFound();
@@ -30,7 +39,7 @@ namespace GimenaCreations.Pages.Admin.Suppliers
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Supplier = supplier;
             }
@@ -39,6 +48,11 @@ namespace GimenaCreations.Pages.Admin.Suppliers
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Suppliers.Delete)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.Suppliers == null)
             {
                 return NotFound();

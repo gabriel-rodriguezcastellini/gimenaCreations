@@ -1,5 +1,8 @@
 ﻿@page
 @model GimenaCreations.Pages.Admin.Suppliers.IndexModel
+@using GimenaCreations.Constants;
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Suppliers";
@@ -10,31 +13,32 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Suppliers.Create)).Succeeded)
+    {
+        <a asp-page="Create">Create New</a>
+
+        <br />
+    }
+
+    <a asp-page="Index" asp-page-handler="Report">Module report</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].Name)
+                @Html.DisplayNameFor(model => model.Supplier[0].SupplierId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].CompanyAddress)
+                @Html.DisplayNameFor(model => model.Supplier[0].BusinessName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].Cuit)
+                @Html.DisplayNameFor(model => model.Supplier[0].SupplierType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].AfipResponsibility)
+                @Html.DisplayNameFor(model => model.Supplier[0].ContactName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Supplier[0].Website)
+                @Html.DisplayNameFor(model => model.Supplier[0].ContactPhone)
             </th>
             <th></th>
         </tr>
@@ -44,30 +48,34 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.SupplierId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CompanyAddress)
+                    @Html.DisplayFor(modelItem => item.BusinessName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Cuit)
+                    @Html.DisplayFor(modelItem => item.SupplierType)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AfipResponsibility)
+                    @Html.DisplayFor(modelItem => item.ContactName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
+                    @Html.DisplayFor(modelItem => item.ContactPhone)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    <a href="@item.Website" target="_blank">@item.Website</a>
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Suppliers.Edit)).Succeeded)
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                        Html.Raw("|");
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Suppliers.Delete)).Succeeded)
+                    {
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                        Html.Raw("|");
+                    }
+
                     <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

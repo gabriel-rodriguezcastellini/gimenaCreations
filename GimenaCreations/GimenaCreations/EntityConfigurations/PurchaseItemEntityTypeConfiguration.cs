@@ -10,6 +10,5 @@ public class PurchaseItemEntityTypeConfiguration : IEntityTypeConfiguration<Purc
     {
         builder.ToTable("PurchaseItems");
         builder.HasKey(p => p.Id);
-        builder.Property(x=>x.Name).IsRequired();
     }
 }

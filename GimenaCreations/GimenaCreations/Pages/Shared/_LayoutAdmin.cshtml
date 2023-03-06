@@ -3,6 +3,8 @@
 @using GimenaCreations.Entities;
 @using GimenaCreations.Pages.Admin;
 @using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,43 +33,93 @@
                 <div class="list-group list-group-flush mx-3 mt-4">
                     <a asp-page="/Admin/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.WebsiteTrafficNavClass(ViewContext)">
                         <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
-                    </a>                    
-                    <a asp-page="/Admin/CatalogItems/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogNavClass(ViewContext)">
-                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog</span>
                     </a>
-                    <a asp-page="/Admin/CatalogTypes/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogTypesNavClass(ViewContext)">
-                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog types</span>
-                    </a>
-                    <a asp-page="/Admin/Orders/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SalesNavClass(ViewContext)">
-                        <i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span>
-                    </a>
-                    <a asp-page="/Admin/Purchases/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.PurchasesNavClass(ViewContext)">
-                        <i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span>
-                    </a>
-                    @if (User.IsInRole(Role.Manager))
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.CatalogItems.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/CatalogItems/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogNavClass(ViewContext)">
+                            <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.CatalogTypes.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/CatalogTypes/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.CatalogTypesNavClass(ViewContext)">
+                            <i class="fas fa-chart-bar fa-fw me-3"></i><span>Catalog types</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Orders.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/Orders/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SalesNavClass(ViewContext)">
+                            <i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Purchases.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/Purchases/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.PurchasesNavClass(ViewContext)">
+                            <i class="fas fa-chart-bar fa-fw me-3"></i><span>Purchases</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Roles.View)).Succeeded)
                     {
                         <a asp-page="/Admin/Roles/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.RolesNavClass(ViewContext)">
-                            <i class="fas fa-users fa-fw me-3"></i><span>Roles</span>
-                        </a>                        
+                            <i class="fas fa-user-lock fa-fw me-3"></i><span>Roles</span>
+                        </a>
                     }
-                    <a asp-page="/Admin/Suppliers/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SuppliersNavClass(ViewContext)">
-                        <i class="fas fa-building fa-fw me-3"></i><span>Suppliers</span>
-                    </a>
-                    @if (User.IsInRole(Role.Manager))
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Suppliers.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/Suppliers/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.SuppliersNavClass(ViewContext)">
+                            <i class="fas fa-building fa-fw me-3"></i><span>Suppliers</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.PurchaseReceptions.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/PurchaseReceptions/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.PurchasesReceptionsNavClass(ViewContext)">
+                            <i class="fas fa-building fa-fw me-3"></i><span>Purchase receptions</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.PurchasesChangeHistory.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/PurchasesChangeHistory/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.PurchasesChangeHistoryNavClass(ViewContext)">
+                            <i class="fas fa-building fa-fw me-3"></i><span>Purchases change history</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Users.View)).Succeeded)
                     {
                         <a asp-page="/Admin/Users/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.UsersNavClass(ViewContext)">
                             <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                         </a>
                     }
-                    <a asp-page="/Admin/AuditEntries/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.AuditEntriesNavClass(ViewContext)">
-                        <i class="far fa-flag fa-fw me-3"></i><span>Audit report</span>
-                    </a>
-                    <a asp-page="/Admin/LoginLogoutReport/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.LoginLogoutNavClass(ViewContext)">
-                        <i class="far fa-flag fa-fw me-3"></i><span>Login-Logout report</span>
-                    </a>
-                    <a href="https://localhost:7217/hc-ui" target="_blank" class="list-group-item list-group-item-action py-2 ripple">
-                        <i class="fas fa-laptop-medical fa-fw me-3"></i><span>Health check</span>
-                    </a>
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.AuditEntries.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/AuditEntries/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.AuditEntriesNavClass(ViewContext)">
+                            <i class="far fa-flag fa-fw me-3"></i><span>Audit report</span>
+                        </a>
+                    }
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.LoginLogoutReport.View)).Succeeded)
+                    {
+                        <a asp-page="/Admin/LoginLogoutReport/Index" class="list-group-item list-group-item-action py-2 ripple @ManageNavPages.LoginLogoutNavClass(ViewContext)">
+                            <i class="far fa-flag fa-fw me-3"></i><span>Login-Logout report</span>
+                        </a>
+                    }
+
+                    @await Component.InvokeAsync(typeof(GimenaCreations.ViewComponents.CriticalStock))
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.HealthCheck.View)).Succeeded)
+                    {
+                        <a href="https://localhost:7217/hc-ui" target="_blank" class="list-group-item list-group-item-action py-2 ripple">
+                            <i class="fas fa-laptop-medical fa-fw me-3"></i><span>Health check</span>
+                        </a>
+                    }
                 </div>
             </div>
         </nav>
@@ -123,7 +175,7 @@
         </main>
     </div>
 
-    <footer class="text-center text-white mt-auto" style="background-color: #607D8B">
+    <footer class="text-center text-white mt-auto w-100" style="background-color: #607D8B">
         <div class="container">
             <!-- Section: Social media -->
             <section>

@@ -6,7 +6,10 @@ namespace GimenaCreations.Entities
     public class CatalogItem
     {
         public int Id { get; set; }
+
+        [Display(Name = "Product name")]
         public string Name { get; set; }
+
         public string Description { get; set; }
         public decimal Price { get; set; }
 

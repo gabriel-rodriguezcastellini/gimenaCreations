@@ -2,37 +2,46 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Entities;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class DeleteModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IAuthorizationService _authorizationService;
 
-        public DeleteModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment environment)
+        public DeleteModel(Data.ApplicationDbContext context, IWebHostEnvironment environment, IAuthorizationService authorizationService)
         {
             _context = context;
             _environment = environment;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
-      public CatalogItem CatalogItem { get; set; }
+        public CatalogItem CatalogItem { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogItems.Delete)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();
             }
 
-            var catalogitem = await _context.CatalogItems.Include(x=>x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
+            var catalogitem = await _context.CatalogItems.Include(x => x.CatalogType).FirstOrDefaultAsync(m => m.Id == id);
 
             if (catalogitem == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 CatalogItem = catalogitem;
             }
@@ -41,6 +50,11 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogItems.Delete)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();

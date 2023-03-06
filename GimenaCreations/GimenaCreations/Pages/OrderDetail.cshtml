@@ -6,6 +6,7 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
+<a asp-page="OrderDetail" asp-page-handler="Invoice" asp-route-orderId="@Model.Order.Id">Download invoice</a>
 <div class="row my-3 fw-bold">
     <div class="col-3 my-auto"><p>ORDER NUMBER</p></div>
     <div class="col-3 my-auto"><p>DATE</p></div>

@@ -1,6 +1,9 @@
 ﻿@page
 @using GimenaCreations.Constants;
 @model GimenaCreations.Pages.Admin.Users.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @{
     ViewData["Title"] = "Users";
     Layout = "~/Pages/Shared/_LayoutAdmin.cshtml";
@@ -72,17 +75,16 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem=>item.PhoneNumber)
-                </td>
+                </td>                
                 <td>
-                    <form method="post">
-                        @if (item.Id != Model.CurrentUserId && 
-                            (!item.Roles.Any(x => x == Role.Admin || x == Role.Manager) && User.IsInRole(Role.Admin) 
-                                || !item.Roles.Any(x => x == Role.Manager) && User.IsInRole(Role.Manager)))
-                        {
-                            <button class="btn btn-warning mb-3" type="submit" asp-page-handler="ChangeStatus"
-                            asp-route-id="@item.Id">@(item.Active ? "Deactivate" : "Activate")</button>
-                        }                        
-                    </form>
+                    @if((await AuthorizationService.AuthorizeAsync(User, Permissions.Users.ChangeStatus)).Succeeded)
+                    {
+                        <form method="post">                        
+                            <button class="btn btn-warning mb-3" type="submit" asp-page-handler="ChangeStatus" asp-route-id="@item.Id">
+                                @(item.Active ? "Deactivate" : "Activate")
+                            </button>
+                        </form>
+                    }                    
                 </td>
             </tr>
         }

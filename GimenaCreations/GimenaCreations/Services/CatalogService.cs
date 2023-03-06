@@ -60,6 +60,11 @@ namespace GimenaCreations.Services
 
         public async Task<IList<CatalogType>> GetCatalogTypesAsync() => await _context.CatalogTypes.ToListAsync();
 
+        public async Task<List<CatalogItem>> GetItemsWithCriticalStockAsync()
+        {
+            return await _context.CatalogItems.Where(x => x.AvailableStock < x.RestockThreshold && !x.OnReorder).ToListAsync();
+        }
+
         public async Task UpdateCatalogItemStockAsync(int catalogItemId, int substractedQuantity)
         {
             var catalogItem = await _context.CatalogItems.FirstAsync(x => x.Id == catalogItemId);

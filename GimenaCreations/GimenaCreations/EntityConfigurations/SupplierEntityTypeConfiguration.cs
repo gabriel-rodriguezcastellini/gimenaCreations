@@ -10,12 +10,17 @@ public class SupplierEntityTypeConfiguration : IEntityTypeConfiguration<Supplier
     {
         builder.ToTable("Suppliers");
         builder.HasKey(t => t.Id);
-        builder.Property(x=>x.Website).IsRequired();
-        builder.Property(x=>x.Cuit).IsRequired();
-        builder.Property(x=>x.AfipResponsibility).IsRequired();
-        builder.Property(x=>x.CompanyAddress).IsRequired();
-        builder.Property(x=>x.Email).IsRequired();
-        builder.Property(x=>x.Phone).IsRequired();
-        builder.Property(x=>x.Name).IsRequired();
+        builder.HasIndex(t => t.SupplierId).IsUnique();
+        builder.Property(x => x.SupplierId).IsRequired();
+        builder.Property(x => x.SupplierType).IsRequired();
+        builder.Property(x => x.Phone1).IsRequired();
+        builder.Property(x => x.Phone2).IsRequired();
+        builder.Property(x => x.ContactName).IsRequired();
+        builder.Property(x => x.BusinessName).IsRequired();
+        builder.Property(x => x.Address).IsRequired();
+        builder.Property(x => x.City).IsRequired();
+        builder.Property(x => x.State).IsRequired();
+        builder.Property(x => x.Email).IsRequired();
+        builder.Property(x => x.Image).IsRequired(false);
     }
 }

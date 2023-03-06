@@ -1,5 +1,8 @@
 ﻿@page
 @model GimenaCreations.Pages.Admin.Orders.IndexModel
+@using GimenaCreations.Constants;
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Sales";
@@ -71,7 +74,11 @@
                     }
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    @if((await AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Edit)).Succeeded)
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> Html.Raw("|");
+                    }
+                    
                     <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
                 </td>
             </tr>

@@ -2,6 +2,7 @@ using GimenaCreations.Constants;
 using GimenaCreations.Data;
 using GimenaCreations.Entities;
 using GimenaCreations.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,11 +14,13 @@ namespace GimenaCreations.Pages.Admin
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuthorizationService _authorizationService;
 
-        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService)
         {
             _context = context;
             _userManager = userManager;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -35,8 +38,13 @@ namespace GimenaCreations.Pages.Admin
         [BindProperty]
         public decimal TotalCost { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Admin.View)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             foreach (var item in (await _context.OrderItems.Select(x => new { x.CatalogItemId, x.Total, x.ProductName }).AsNoTracking().ToListAsync()).GroupBy(x => x.CatalogItemId))
             {
                 Sales.Add(new()
@@ -77,16 +85,16 @@ namespace GimenaCreations.Pages.Admin
             SalePerformance.Quantity.Sign = purchases >= lastMonthPurchases ? Sign.Positive : Sign.Negative;
             SalePerformance.Quantity.AbsoluteChange = Math.Abs(purchases - lastMonthPurchases);
 
-            SalePerformance.Quantity.PercentageChange = purchases >= lastMonthPurchases ? Math.Abs(lastMonthUniquePurchases * 100 / purchases - 100) : 
+            SalePerformance.Quantity.PercentageChange = purchases >= lastMonthPurchases ? Math.Abs(lastMonthUniquePurchases * 100 / purchases - 100) :
                 purchases * 100 / lastMonthPurchases - 100;
 
             var productRevenue = (await _context.Orders.Include(x => x.Items).Where(x => x.Status == OrderStatus.Paid && x.Date >= startOfTthisMonth).AsNoTracking().ToListAsync())
-                .Sum(x => x.GetTotal()) - (await _context.Purchases.Include(x => x.Items).Where(x => x.IsPaid && x.InvoiceDate >= startOfTthisMonth).AsNoTracking().ToListAsync())
+                .Sum(x => x.GetTotal()) - (await _context.Purchases.Include(x => x.Items).Where(x => x.PurchaseDate >= startOfTthisMonth).AsNoTracking().ToListAsync())
                 .Sum(x => x.GetTotal());
 
             var lastMonthProductRevenue = (await _context.Orders.Include(x => x.Items).Where(x => x.Status == OrderStatus.Paid && x.Date >= firstDay && x.Date <= lastDay).AsNoTracking()
                 .ToListAsync())
-                .Sum(x => x.GetTotal()) - (await _context.Purchases.Include(x => x.Items).Where(x => x.IsPaid && x.InvoiceDate >= firstDay && x.InvoiceDate <= lastDay).AsNoTracking()
+                .Sum(x => x.GetTotal()) - (await _context.Purchases.Include(x => x.Items).Where(x => x.PurchaseDate >= firstDay && x.PurchaseDate <= lastDay).AsNoTracking()
                 .ToListAsync())
                 .Sum(x => x.GetTotal());
 
@@ -99,17 +107,16 @@ namespace GimenaCreations.Pages.Admin
 
             foreach (var item in await _context.Users.Where(x => x.DateTimeAdd >= startOfTthisMonth).ToListAsync())
             {
-                if (!await _userManager.IsInRoleAsync(item, Role.Admin) && !await _userManager.IsInRoleAsync(item, Role.Manager))
-                {
-                    NewClients++;
-                }
+                NewClients++;
             }
 
             TotalSales = (await _context.Orders.Where(x => x.Date >= startOfTthisMonth && x.Status == OrderStatus.Paid).Include(x => x.Items).Select(x => x.GetTotal()).ToListAsync())
                 .Sum(x => x);
 
-            TotalCost = (await _context.Purchases.Where(x => x.InvoiceDate >= startOfTthisMonth && x.IsPaid).Include(x => x.Items).Select(x => x.GetTotal()).ToListAsync())
+            TotalCost = (await _context.Purchases.Where(x => x.PurchaseDate >= startOfTthisMonth).Include(x => x.Items).Select(x => x.GetTotal()).ToListAsync())
                 .Sum(x => x);
+
+            return Page();
         }
     }
 }

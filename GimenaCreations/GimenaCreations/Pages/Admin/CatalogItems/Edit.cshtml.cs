@@ -4,20 +4,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Helpers;
 using GimenaCreations.Entities;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.CatalogItems
 {
     public class EditModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly IFileHelper _fileHelper;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, IFileHelper fileHelper)
+        public EditModel(Data.ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, IFileHelper fileHelper, IAuthorizationService authorizationService)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _fileHelper = fileHelper;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -25,6 +29,11 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogItems.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.CatalogItems == null)
             {
                 return NotFound();
@@ -44,6 +53,11 @@ namespace GimenaCreations.Pages.Admin.CatalogItems
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.CatalogItems.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();

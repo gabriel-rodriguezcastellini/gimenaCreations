@@ -84,8 +84,8 @@ public class ApplicationDbContextSeed
 
     private static IEnumerable<IdentityRole> GetIdentityRoles() => new List<IdentityRole>
         {
-            new(){Name=Role.Admin},
-            new(){Name=Role.Manager}
+            new(){Name="Admin"},
+            new(){Name="Manager"}
         };
 
     private static AsyncRetryPolicy CreatePolicy(ILogger<ApplicationDbContextSeed> logger, string prefix, int retries = 3) => Policy.Handle<SqlException>().

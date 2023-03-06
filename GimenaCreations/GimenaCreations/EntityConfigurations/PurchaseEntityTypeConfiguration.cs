@@ -10,6 +10,8 @@ public class PurchaseEntityTypeConfiguration : IEntityTypeConfiguration<Purchase
     {
         builder.ToTable("Purchases");
         builder.HasKey(p => p.Id);
-        builder.Property(x=>x.InvoiceNumber).IsRequired();
+        builder.Property(x => x.RecipientName).IsRequired();
+        builder.Property(x => x.ShippingAddress).IsRequired();
+        builder.Property(x => x.ShippingCity).IsRequired();
     }
 }

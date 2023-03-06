@@ -4,18 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using GimenaCreations.Contracts;
 using GimenaCreations.Entities;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.OrderItems
 {
     public class EditModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly IBus bus;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context, IBus bus)
+        public EditModel(Data.ApplicationDbContext context, IBus bus, IAuthorizationService authorizationService)
         {
             _context = context;
             this.bus = bus;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -26,6 +30,11 @@ namespace GimenaCreations.Pages.Admin.OrderItems
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.OrderItems.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -49,6 +58,11 @@ namespace GimenaCreations.Pages.Admin.OrderItems
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.OrderItems.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();

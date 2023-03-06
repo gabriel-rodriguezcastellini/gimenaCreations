@@ -14,34 +14,70 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.Name)
+            @Html.DisplayNameFor(model => model.Supplier.SupplierId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.Name)
+            @Html.DisplayFor(model => model.Supplier.SupplierId)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.CompanyAddress)
+            @Html.DisplayNameFor(model => model.Supplier.Agreement)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.CompanyAddress)
+            @Html.DisplayFor(model => model.Supplier.Agreement)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.Cuit)
+            @Html.DisplayNameFor(model => model.Supplier.SupplierType)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.Cuit)
+            @Html.DisplayFor(model => model.Supplier.SupplierType)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.AfipResponsibility)
+            @Html.DisplayNameFor(model => model.Supplier.Phone1)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.AfipResponsibility)
+            @Html.DisplayFor(model => model.Supplier.Phone1)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.Phone)
+            @Html.DisplayNameFor(model => model.Supplier.Phone2)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.Phone)
+            @Html.DisplayFor(model => model.Supplier.Phone2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.ContactName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.ContactName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.ContactPhone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.ContactPhone)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.BusinessName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.BusinessName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.State)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Supplier.State)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Supplier.Email)
@@ -50,10 +86,16 @@
             @Html.DisplayFor(model => model.Supplier.Email)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier.Website)
+            @Html.DisplayNameFor(model => model.Supplier.AddDate)
         </dt>
         <dd class="col-sm-10">
-            <a href="@Model.Supplier.Website" target="_blank">@Model.Supplier.Website</a>
+            @Html.DisplayFor(model => model.Supplier.AddDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Supplier.Image)
+        </dt>
+        <dd class="col-sm-10">
+            <img class="w-100" src="@Url.Page("Index", "Image", new { id = Model.Supplier.Id })" />
         </dd>
     </dl>
 </div>

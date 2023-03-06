@@ -1,5 +1,6 @@
 ﻿using GimenaCreations.Entities;
 using GimenaCreations.EntityConfigurations;
+using GimenaCreations.Extensions;
 using GimenaCreations.MarkerInterfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +11,26 @@ using System.Security.Claims;
 namespace GimenaCreations.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-{    
+{
     private readonly IHttpContextAccessor _contextAccessor;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : base(options)
     {
         _contextAccessor = contextAccessor;
+        ChangeTracker.StateChanged += ChangeTracker_StateChanged;        
     }
 
     public DbSet<AuditEntry> AuditEntries { get; set; }
     public DbSet<CatalogItem> CatalogItems { get; set; }
+    public DbSet<PurchaseReception> PurchaseReceptions { get; set; }
+    public DbSet<PurchaseReceptionItem> PurchaseReceptionItems { get; set; }
     public DbSet<CatalogType> CatalogTypes { get; set; }
     public DbSet<LoginLogoutAudit> LoginLogoutAudits { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Purchase> Purchases { get; set; }
+    public DbSet<PurchaseHistory> PurchaseHistories { get; set; }
+    public DbSet<PurchaseHistoryItem> PurchaseHistoryItems { get; set; }
     public DbSet<PurchaseItem> PurchaseItems { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Entities.File> Files { get; set; }
@@ -48,6 +54,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.ApplyConfiguration(new AuditEntryEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogItemEntityTypeConfiguration());
         builder.ApplyConfiguration(new CatalogTypeEntityTypeConfiguration());
+        builder.ApplyConfiguration(new PurchaseReceptionEntityTypeConfiguration());
+        builder.ApplyConfiguration(new PurchaseHistoryItemEntityTypeConfiguration());
+        builder.ApplyConfiguration(new PurchaseReceptionItemEntityTypeConfiguration());
         builder.ApplyConfiguration(new FileEntityTypeConfiguration());
         builder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         builder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
@@ -59,6 +68,29 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasConversion(value => JsonConvert.SerializeObject(value), serializedValue => JsonConvert.DeserializeObject<Dictionary<string, object>>(serializedValue));
 
         base.OnModelCreating(builder);
+    }    
+
+    private void ChangeTracker_StateChanged(object sender, EntityStateChangedEventArgs e)
+    {
+        if (e.Entry.Entity is IUpdateable updateable)
+        {
+            if (e.Entry.State == EntityState.Modified)
+            {
+                updateable.ModificationDate = DateTime.Now;
+
+                if (updateable is Purchase purchaseUpdate)
+                {
+                    PurchaseHistoryItems.Add(new PurchaseHistoryItem
+                    {
+                        Date = DateTime.UtcNow,
+                        PurchaseHistoryId = PurchaseHistories.First(x => x.PurchaseId == purchaseUpdate.Id).Id,
+                        State = purchaseUpdate.PurchaseStatus.GetDisplayName()
+                    });
+
+                    SaveChanges();
+                }
+            }
+        }
     }
 
     private List<AuditEntry> OnBeforeSaveChanges()
@@ -104,7 +136,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         if (auditEntries == null || auditEntries.Count == 0)
         {
             return Task.CompletedTask;
-        }            
+        }
 
         // For each temporary property in each audit entry - update the value in the audit entry to the actual (generated) value
         foreach (var entry in auditEntries)

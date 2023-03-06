@@ -2,16 +2,23 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GimenaCreations.Entities;
+using GimenaCreations.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using GimenaCreations.Constants;
 
 namespace GimenaCreations.Pages.Admin.Suppliers
 {
     public class EditModel : PageModel
     {
-        private readonly GimenaCreations.Data.ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
+        private readonly IFileHelper _fileHelper;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(GimenaCreations.Data.ApplicationDbContext context)
+        public EditModel(Data.ApplicationDbContext context, IFileHelper fileHelper, IAuthorizationService authorizationService)
         {
             _context = context;
+            _fileHelper = fileHelper;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -19,6 +26,11 @@ namespace GimenaCreations.Pages.Admin.Suppliers
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Suppliers.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (id == null || _context.Suppliers == null)
             {
                 return NotFound();
@@ -37,15 +49,36 @@ namespace GimenaCreations.Pages.Admin.Suppliers
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!(await _authorizationService.AuthorizeAsync(User, Permissions.Suppliers.Edit)).Succeeded)
+            {
+                return new ForbidResult();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
-            }
-
-            _context.Attach(Supplier).State = EntityState.Modified;
+            }            
 
             try
             {
+                if (Supplier.FormFile == null)
+                {
+                    Supplier.Image = null;
+                }
+                else
+                {
+                    var file = await _fileHelper.GetFileAsync(Supplier.FormFile);
+
+                    if (file.Item2 != null)
+                    {
+                        ModelState.AddModelError(string.Empty, file.Item2);
+                        return Page();
+                    }
+
+                    Supplier.Image = file.Item1;
+                }
+
+                _context.Attach(Supplier).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
