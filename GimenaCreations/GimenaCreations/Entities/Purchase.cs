@@ -66,33 +66,3 @@ public class Purchase : IAuditable, IUpdateable
 
     public decimal GetTotal() => Items.Sum(x => x.Quantity * x.Price);
 }
-
-public enum Importance
-{
-    [Display(Name = "Low")]
-    Low,
-
-    [Display(Name = "Normal")]
-    Normal,
-
-    [Display(Name = "Medium")]
-    Medium,
-
-    [Display(Name = "High")]
-    High
-}
-
-public enum PurchaseStatus
-{
-    [Display(Name = "Submitted")]
-    Submitted,
-
-    [Display(Name = "Partially delivered")]
-    PartiallyDelivered,
-
-    [Display(Name = "Changing items")]
-    ChangingItems,
-
-    [Display(Name = "Delivered")]
-    Delivered
-}
